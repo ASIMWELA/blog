@@ -1,11 +1,5 @@
-import React from 'react'
+import React from "react";
 
 export default function Home() {
-    return (
-        <div>
-
-            Home Component
-            
-        </div>
-    )
+  return <div style={{ marginTop: "-15%" }}>Home Component</div>;
 }

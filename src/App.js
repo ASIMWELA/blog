@@ -1,35 +1,35 @@
-import React from 'react';
-import {Switch, Route} from 'react-router-dom';
+import React from "react";
+import { Switch, Route } from "react-router-dom";
 
 //import components
-import {  Home, 
-          NavBar,
-          Profile,
-          Projects,
-          Contact,
-          Login,
-          } from './components/commons'
+import {
+  Home,
+  NavBar,
+  Profile,
+  Projects,
+  Contact,
+  Login,
+} from "./components/commons";
 
 function App() {
-  const RoutesWithNavBar = ()=>{
+  const RoutesWithNavBar = () => {
     return (
       <div>
-        <NavBar/>
+        <NavBar />
         <Switch>
-          <Route exact path='/' component={Home}/>
-          <Route  path='/profile' component={Profile}/>
-          <Route  path='/projects' component={Projects}/> 
-          <Route  path='/contact' component={Contact}/> 
-          <Route  path='/contact' component={Home}/> 
+          <Route exact path="/" component={Home} />
+          <Route path="/profile" component={Profile} />
+          <Route path="/projects" component={Projects} />
+          <Route path="/contact" component={Contact} />
         </Switch>
       </div>
-    )
-  }
+    );
+  };
   return (
     <>
       <Switch>
-          <Route path='/login' component={Login}/>
-          <Route component={RoutesWithNavBar}/>
+        <Route path="/login" component={Login} />
+        <Route component={RoutesWithNavBar} />
       </Switch>
     </>
   );
