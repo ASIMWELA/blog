@@ -1,5 +1,6 @@
 import React from "react";
 import { BiCodeAlt } from "react-icons/bi";
+import { FaUserLock } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import "./navbar.css";
 
@@ -42,6 +43,14 @@ export default function NavBar() {
               <li className="nav-item">
                 <Link to="/contact" className="nav-link">
                   Contact
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link to="/login" className="nav-link">
+                  <FaUserLock
+                    size={20}
+                    style={{ color: "white", marginBottom: "35%" }}
+                  />
                 </Link>
               </li>
             </ul>
