@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { BiCodeAlt } from "react-icons/bi";
 import { FaUserLock } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import "./navbar.css";
+import { headerTextIntro } from "../../animations/Animate";
 
 export default function NavBar() {
+  let headerLinks = useRef(null);
+
+  useEffect(() => {
+    headerTextIntro(headerLinks);
+  }, []);
   return (
     <div className="wave-container">
       <nav className="navbar navbar-expand-lg navbar-secondary bg-secondary justify-content-end">
@@ -24,7 +30,7 @@ export default function NavBar() {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ml-auto">
+            <ul className="navbar-nav ml-auto" ref={(el) => (headerLinks = el)}>
               <li className="nav-item">
                 <Link to="/" className="nav-link active">
                   Home

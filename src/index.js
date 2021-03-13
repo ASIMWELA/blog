@@ -3,13 +3,23 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/custom-theme.scss";
+import { RecoilRoot } from "recoil";
+import { recoilPersist } from "recoil-persist";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router } from "react-router-dom";
+
+const { RecoilPersist, updateState } = recoilPersist([], {
+  key: "data",
+  storage: localStorage,
+});
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <App />
+      <RecoilRoot initializeState={updateState}>
+        <App />
+        <RecoilPersist />
+      </RecoilRoot>
     </Router>
   </React.StrictMode>,
   document.getElementById("root")

@@ -1,13 +1,50 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import computerUser from "../../asserts/computer-user.png";
 import { Link } from "react-router-dom";
 import { BsCodeSlash } from "react-icons/bs";
 import { AiOutlineMail } from "react-icons/ai";
+import ApiUtil from "../../ApiUtil/ApiUtilityClass";
+import { useRecoilState } from "recoil";
+import { admin } from "../../recoilState";
+
+import { textIntro, careerIntro } from "../../animations/Animate";
+
 export default function Home() {
+  const [pageAdmin, setAdmin] = useRecoilState(admin);
+  let home = useRef(null);
+  let career = useRef(null);
+
+  useEffect(() => {
+    textIntro(home);
+    careerIntro(career);
+    const fetchUsers = async () => {
+      const users = await ApiUtil.getUsers().catch((err) => {
+        console.log(err);
+      });
+
+      console.log(users);
+    };
+
+    const fetchAdmin = async () => {
+      const admin = await ApiUtil.getAdmin().catch((err) => {
+        console.log(err);
+      });
+
+      console.log(admin);
+      setAdmin(admin);
+    };
+
+    fetchUsers();
+    fetchAdmin();
+  }, [setAdmin]);
   return (
-    <div className="container-fluid">
+    <div className="container-fluid home">
       <div className="row">
-        <div style={{ marginTop: "-15%" }} className="col-sm-5 text-center">
+        <div
+          style={{ marginTop: "-15%" }}
+          className="col-sm-5 text-center"
+          ref={(el) => (home = el)}
+        >
           <div>
             <Link to="/profile">
               <img
@@ -33,7 +70,11 @@ export default function Home() {
           </div>
         </div>
         <div className="com-sm-2"></div>
-        <div style={{ marginTop: "-5%" }} className="col-sm-5 text-center ml-5">
+        <div
+          style={{ marginTop: "-5%" }}
+          className="col-sm-5 text-center ml-5"
+          ref={(el) => (career = el)}
+        >
           <BsCodeSlash size={50} className="mt-5" />
           <h5>Career Span</h5>
           <p>
