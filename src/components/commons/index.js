@@ -1,8 +1,9 @@
-export {default as Contact} from './Contact'
-export {default as Home} from './Home'
-export {default as Footer} from './Footer'
-export {default as NavBar} from './NavBar'
-export {default as Profile} from './Profile'
-export {default as Login} from './Login'
-export {default as Default} from './Default'
-export {default as Projects} from './Projects'
+export { default as Contact } from "./Contact";
+export { default as Home } from "./Home";
+export { default as Footer } from "./Footer";
+export { default as NavBar } from "./NavBar";
+export { default as Profile } from "./Profile";
+export { default as Login } from "./Login";
+export { default as Default } from "./Default";
+export { default as Projects } from "./Projects";
+export { default as PageLoader } from "./PageLoader";

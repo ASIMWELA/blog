@@ -7,6 +7,7 @@ import { RecoilRoot } from "recoil";
 import { recoilPersist } from "recoil-persist";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router } from "react-router-dom";
+import { SmoothProvider } from "react-smooth-scrolling";
 
 const { RecoilPersist, updateState } = recoilPersist([], {
   key: "data",
@@ -17,7 +18,9 @@ ReactDOM.render(
   <React.StrictMode>
     <Router>
       <RecoilRoot initializeState={updateState}>
-        <App />
+        <SmoothProvider skew={true} ease={0.06}>
+          <App />
+        </SmoothProvider>
         <RecoilPersist />
       </RecoilRoot>
     </Router>
