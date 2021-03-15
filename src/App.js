@@ -13,14 +13,14 @@ import {
 } from "./components/commons";
 import ApiUtil from "./ApiUtil/ApiUtilityClass";
 
-import { admin } from "./recoilState";
+import { admin, projects } from "./recoilState";
 import { useRecoilState } from "recoil";
 
 function App() {
   // eslint-disable-next-line no-unused-vars
   const [pageAdmin, setAdmin] = useRecoilState(admin);
+  const [projectsData, setProjects] = useRecoilState(projects);
 
-  const [error, setErrorMessage] = useState();
   //no data yet, deafult to loading
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -32,15 +32,25 @@ function App() {
           return res;
         })
         .catch((err) => {
-          console.log(err.message);
-          setErrorMessage(err.message);
+          console.log(err);
         });
 
       //make available all the admin data to all component
       setAdmin(admin);
     };
 
+    const fetchProjects = async () => {
+      const projects = await ApiUtil.getProjects()
+        .then((res) => res)
+        .catch((err) => {
+          console.log(err);
+        });
+
+      setProjects(projects);
+    };
+
     fetchAdmin();
+    fetchProjects();
 
     //clean the storage if the user leaves the the site
     window.addEventListener("beforeunload", () => {
@@ -48,7 +58,8 @@ function App() {
         localStorage.removeItem("data");
       }
     });
-  }, [setAdmin]);
+  }, [setAdmin, setProjects]);
+
   const RoutesWithNavBar = () => {
     return (
       <div>

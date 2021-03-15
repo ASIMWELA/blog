@@ -32,7 +32,7 @@ export default function NavBar() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ml-auto" ref={(el) => (headerLinks = el)}>
               <li className="nav-item">
-                <Link to="/" className="nav-link active">
+                <Link to="/" className="nav-link">
                   Home
                 </Link>
               </li>

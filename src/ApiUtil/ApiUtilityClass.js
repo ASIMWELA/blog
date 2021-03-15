@@ -33,21 +33,17 @@ class ApiUtil {
   };
 
   static getProjects = async () => {
-    try {
-      const projects = await Axios({
-        url: API_BASE_URL + "/projects",
-        method: "GET",
-      }).then((res) => {
-        return res.data;
-      });
+    const projects = await Axios({
+      url: API_BASE_URL + "/projects",
+      method: "GET",
+    }).then((res) => {
+      return res.data;
+    });
 
-      if ("_embedded" in projects) {
-        return projects;
-      } else {
-        return null;
-      }
-    } catch (err) {
-      console.log(err);
+    if ("_embedded" in projects) {
+      return projects._embedded.projectList;
+    } else {
+      return null;
     }
   };
 }

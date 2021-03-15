@@ -3,6 +3,7 @@ import computerUser from "../../asserts/computer-user.png";
 import { Link } from "react-router-dom";
 import { BsCodeSlash } from "react-icons/bs";
 import { AiOutlineMail, AiOutlineArrowRight } from "react-icons/ai";
+import proGrammingLogo from "../../asserts/programming-logo.png";
 import "./home.css";
 
 import { textIntro, careerIntro } from "../../animations/Animate";
@@ -44,12 +45,14 @@ export default function Home() {
 
         setSkills(adminSkills);
       }
+      const projects = JSON.parse(localStorage.data).projects;
+      if (projects) {
+        setProjects(projects.slice(0, 3));
+      }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [admin]);
-
-  console.log(admin);
 
   const dynamicClasses = () => {
     const awardCls = [
@@ -57,7 +60,6 @@ export default function Home() {
       "badge rounded-pill bg-warning text-light ml-1",
       "badge rounded-pill bg-dark text-light ml-1",
       "badge rounded-pill bg-success text-light ml-1",
-      "badge rounded-pill bg-light text-dark ml-1",
     ];
 
     const random = Math.floor(Math.random() * awardCls.length);
@@ -106,7 +108,7 @@ export default function Home() {
               vitae lacus aliquam ornare.
             </p>
             <Link to="/projects">
-              <button className="btn btn-secondary">
+              <button className="btn btn-dark">
                 Get Started <AiOutlineArrowRight className="mb-1" />{" "}
               </button>
             </Link>
@@ -141,30 +143,68 @@ export default function Home() {
             aliquam ornare.
           </p>
           <Link to="/contact">
-            <button className="btn btn-secondary">
+            <button className="btn btn-dark">
               <AiOutlineMail size={20} className="mb-1" /> Lets Connect
             </button>
           </Link>
         </div>
       </div>
       <div className="row">
-        <div className="col-sm-2"></div>
-        <div className="col-sm-8">
+        <div className="col-sm-1"></div>
+        <div className="col-sm-10">
           <div>
             <div className="text-center">
               <h2 className="mt-2" id="home">
                 Designing Your Mind!
               </h2>
-              <p className="descriptionPara">
-                I like to think that my work is a living, breathing embodiment
-                of my passion for discovery. Here is some of it{" "}
-              </p>
+              <div className="descriptionPara">
+                {projects.length > 0 && (
+                  <span>
+                    I like to think that my work is a living, breathing
+                    embodiment of my passion for discovery. Here is some of it!{" "}
+                    <div className="row">
+                      {projects.map((project) => {
+                        return (
+                          <div className="col-sm-4 mt-3" key={project.name}>
+                            <Link
+                              to={`//${project.locationLink}`}
+                              target="_blank"
+                              className="text-dark"
+                              style={{ textDecoration: "none" }}
+                            >
+                              <div className="card project-card">
+                                <img
+                                  className="card-img-top"
+                                  src={proGrammingLogo}
+                                  alt="programming logo"
+                                />
+
+                                <div className="card-body">
+                                  <h3 className="card-title">{project.name}</h3>
+                                  <p className="card-text">
+                                    {project.description.toLowerCase()}
+                                    <br />
+                                    <small
+                                      className="badge rounded-pill bg-secondary text-light mt-1"
+                                      id="view-online"
+                                    >
+                                      view project online
+                                    </small>
+                                  </p>
+                                </div>
+                              </div>
+                            </Link>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </span>
+                )}
+              </div>
             </div>
-            <div></div>
-            <div></div>
           </div>
         </div>
-        <div className="col-sm-2"></div>
+        <div className="col-sm-1"></div>
       </div>
     </div>
   );
