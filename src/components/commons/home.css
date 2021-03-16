@@ -6,6 +6,14 @@
     line-height: 70px;
     text-transform: capitalize;
     font-family: 'Quicksand', sans-serif;
+    margin-bottom: 0px;
+
+}
+
+.social-media-links{
+    margin-top: -18%;
+    display: flex;
+    flex-direction: column;
 
 }
 
@@ -20,8 +28,7 @@
    
 }
 
-.project-card:hover
-{
+.project-card:hover{
     display: block;
     transform: scale(1.06);
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.24);

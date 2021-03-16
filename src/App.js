@@ -19,6 +19,7 @@ import { useRecoilState } from "recoil";
 function App() {
   // eslint-disable-next-line no-unused-vars
   const [pageAdmin, setAdmin] = useRecoilState(admin);
+  // eslint-disable-next-line no-unused-vars
   const [projectsData, setProjects] = useRecoilState(projects);
 
   //no data yet, deafult to loading
