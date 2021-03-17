@@ -6,7 +6,7 @@ import { AiOutlineMail, AiOutlineArrowRight } from "react-icons/ai";
 import proGrammingLogo from "../../asserts/programming-logo.png";
 import "./home.css";
 
-import { textIntro, careerIntro } from "../../animations/Animate";
+import { careerIntro, animateRight } from "../../animations/Animate";
 
 export default function Home() {
   const [admin, setAdmin] = useState(null);
@@ -18,7 +18,7 @@ export default function Home() {
   let career = useRef(null);
 
   useEffect(() => {
-    textIntro(home);
+    animateRight(home);
     careerIntro(career);
     if (localStorage.data) {
       setAdmin(JSON.parse(localStorage.data).admin);

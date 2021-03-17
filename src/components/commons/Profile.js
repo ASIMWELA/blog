@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BiUserCircle } from "react-icons/bi";
 import { IoIosPhonePortrait, IoIosMail } from "react-icons/io";
+import { FaGraduationCap } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { animateRight, animateTop } from "../../animations/Animate";
 import {
   AiFillFacebook,
   AiFillLinkedin,
@@ -9,10 +11,17 @@ import {
   AiFillTwitterCircle,
 } from "react-icons/ai";
 import "./profile.css";
+import GraduatingStudent from "../../asserts/graduating-student.jpg";
 
 export default function Profile() {
   const [admin, setAdmin] = useState({});
+  const [education, setEducationAwards] = useState([]);
+  let profileCard = useRef(null);
+  let educationDetails = useRef(null);
+
   useEffect(() => {
+    animateRight(profileCard);
+    animateTop(educationDetails);
     if (localStorage.data) {
       const adminData = JSON.parse(localStorage.getItem("data")).admin;
       if (!adminData) {
@@ -23,14 +32,38 @@ export default function Profile() {
     }
   }, []);
 
-  console.log(admin);
+  useEffect(() => {
+    if (!admin) {
+      return;
+    } else {
+      if ("education" in admin) {
+        setEducationAwards(admin.education);
+      }
+    }
+  }, [admin]);
+
+  const dynamicClasses = () => {
+    const awardCls = [
+      "badge rounded-pill bg-primary text-light ml-1",
+      "badge rounded-pill bg-warning text-light ml-1",
+      "badge rounded-pill bg-success text-light ml-1",
+    ];
+
+    const random = Math.floor(Math.random() * awardCls.length);
+
+    return awardCls[random];
+  };
+
+  console.log(education);
+
   return (
-    <div className="container-fluid">
-      <div className="row" style={{ marginTop: "-14%" }}>
-        <div className="col-sm-4 ml-2">
+    <div className="container-fluid profile-card">
+      <div className="row">
+        <div className="col-sm-4" style={{ marginTop: "-1%" }}>
           <div
-            className="card ml-3 rounded profile-card"
+            className="card ml-3 rounded"
             style={{ width: "18rem" }}
+            ref={(el) => (profileCard = el)}
           >
             <div className="backround-cover  text-center">
               <BiUserCircle
@@ -87,7 +120,74 @@ export default function Profile() {
             </div>
           </div>
         </div>
-        <div className="col-sm-8"></div>
+        <div
+          className="col-sm-8"
+          style={{ marginTop: "-12%" }}
+          ref={(el) => (educationDetails = el)}
+        >
+          <div className="row">
+            <div className="col-sm-8 text-center">
+              <h2 className="text-center">
+                <FaGraduationCap /> My Education
+              </h2>
+              <div className="text-center">
+                I have Enjoyed a Thrilling Career in Education. This can be
+                demonsrated by my awards. Below are my education Institutions I
+                have attended and the respective Awards
+                <table className="table  table-sm">
+                  <thead>
+                    <tr>
+                      <th scope="col">Institution</th>
+                      <th scope="col">Awards</th>
+                      <th scope="col">Year</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {education.map((education, index) => {
+                      return (
+                        <tr key={index}>
+                          <td className="badge rounded-pill bg-info text-dark mt-2">
+                            {education.institution.toUpperCase()}
+                          </td>
+                          <td>
+                            {education.awards.map((award, index) => {
+                              return (
+                                <span key={index} className={dynamicClasses()}>
+                                  {award.toUpperCase()}
+                                </span>
+                              );
+                            })}
+                          </td>
+                          <td className="badge rounded-pill bg-success text-light ">
+                            {education.period}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div className="col-sm-4">
+              <img
+                src={GraduatingStudent}
+                alt=""
+                width="150"
+                height="200"
+                className="mr-5"
+              />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-12">
+              <div class="card">
+                <div class="card-body">
+                  This is some text within a card body.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

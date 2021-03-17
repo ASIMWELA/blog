@@ -3,13 +3,13 @@ import { BiCodeAlt } from "react-icons/bi";
 import { FaUserLock } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import "./navbar.css";
-import { headerTextIntro } from "../../animations/Animate";
+import { animateRight } from "../../animations/Animate";
 
 export default function NavBar() {
   let headerLinks = useRef(null);
 
   useEffect(() => {
-    headerTextIntro(headerLinks);
+    animateRight(headerLinks);
   }, []);
   return (
     <div className="wave-container">
