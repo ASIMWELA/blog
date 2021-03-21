@@ -1,15 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import { BiUserCircle } from "react-icons/bi";
 import { IoIosPhonePortrait, IoIosMail, IoMdSettings } from "react-icons/io";
-import { FaGraduationCap } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { animateRight, animateTop } from "../../animations/Animate";
 import {
   AiFillFacebook,
   AiFillLinkedin,
   AiFillGithub,
   AiFillTwitterCircle,
 } from "react-icons/ai";
+import { FaAngleDown, FaAngleUp } from "react-icons/fa";
+import { FaGraduationCap } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { animateRight, animateTop } from "../../animations/Animate";
+import { AdminDetailsNotAvailable } from "./";
 import "./profile.css";
 import GraduatingStudent from "../../asserts/graduating-student.jpg";
 import EmployementIcon from "../../asserts/employee.jpg";
@@ -18,6 +20,8 @@ export default function Profile() {
   const [admin, setAdmin] = useState({});
   const [education, setEducationAwards] = useState([]);
   const [experience, setExperience] = useState([]);
+  const [employment, setEmployment] = useState([]);
+  const [toggleAchvmnts, setToggleAchievement] = useState(false);
   let profileCard = useRef(null);
   let educationDetails = useRef(null);
 
@@ -61,9 +65,19 @@ export default function Profile() {
 
         setExperience(experience);
       }
+
+      if ("employment" in admin) {
+        setEmployment(admin.employment);
+      }
     }
   }, [admin]);
 
+  const toggleAchievements = (event) => {
+    const elem = document.getElementById(event.currentTarget.value);
+
+    console.log(elem);
+    setToggleAchievement(!toggleAchvmnts);
+  };
   const dynamicClasses = () => {
     const awardCls = [
       "badge rounded-pill bg-secondary text-light ml-1",
@@ -75,8 +89,7 @@ export default function Profile() {
     return awardCls[random];
   };
 
-  console.log(experience);
-
+  console.log(employment);
   return (
     <div className="container-fluid profile-card">
       <div className="row">
@@ -207,22 +220,22 @@ export default function Profile() {
           <hr />
           <div className="row mt-4">
             <div className="col-sm-12">
-              {experience.length > 0 && (
-                <div>
-                  <span className="d-flex">
-                    <IoMdSettings size={50} />{" "}
-                    <h2 className="mt-1">Experience</h2>
-                  </span>
-                  <div className="container overflow-hidden">
-                    <div className="row gy-5">
+              <div>
+                <span className="d-flex">
+                  <IoMdSettings size={50} />{" "}
+                  <h2 className="mt-1">Experience</h2>
+                </span>
+                <div className="container overflow-hidden">
+                  {experience.length > 0 ? (
+                    <div className="row gy-4 mb-2">
                       {experience.map((exp, index) => {
                         return (
-                          <div className="col-6" key={index}>
-                            <div className="p-1 mt-2  bg-light">
+                          <div className="col-4" key={index}>
+                            <div className="p-1 mt-2">
                               <span className="badge rounded-pill bg-dark text-light mr-2">
                                 {exp.name}
                               </span>
-                              <span className="badge rounded-pill bg-light text-dark">
+                              <span className="badge rounded-pill bg-grey-dark text-dark">
                                 {exp.years} Years
                               </span>
                               <div>
@@ -232,7 +245,7 @@ export default function Profile() {
                                       return (
                                         <span
                                           key={index}
-                                          className="badge rounded-pill bg-info text-dark"
+                                          className="badge rounded-pill bg-info text-dark mr-2"
                                         >
                                           {sk}
                                         </span>
@@ -246,66 +259,95 @@ export default function Profile() {
                         );
                       })}
                     </div>
-                  </div>
+                  ) : (
+                    <AdminDetailsNotAvailable message="Experience" />
+                  )}
                 </div>
-              )}
+                <hr />
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="row">
-        <div className="col-sm-12">
-          <div className="text-center">
-            <img
-              src={EmployementIcon}
-              alt=""
-              height="100"
-              width="100"
-              className="mb-0 mr-4"
-            />
-            <h2 className="mt-0">Employment</h2>
-          </div>
-          <div id="accordion">
-            <div className="card">
-              <div className="card-header" id="headingOne">
-                <h5 className="mb-0">
-                  <div>Hello Here</div>
-                  <div>Hello Here</div>
-                  <div>Hello Here</div>
-                  <button
-                    className="btn btn-link"
-                    data-toggle="collapse"
-                    data-target="#collapseOne"
-                    aria-controls="collapseOne"
-                  >
-                    Collapsible Group Item #1
-                  </button>
-                </h5>
-              </div>
-
-              <div
-                id="collapseOne"
-                className="collapse show"
-                aria-labelledby="headingOne"
-                data-parent="#accordion"
-              >
-                <div className="card-body">
-                  Anim pariatur cliche reprehenderit, enim eiusmod high life
-                  accusamus terry richardson ad squid. 3 wolf moon officia aute,
-                  non cupidatat skateboard dolor brunch. Food truck quinoa
-                  nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt
-                  aliqua put a bird on it squid single-origin coffee nulla
-                  assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft
-                  beer labore wes anderson cred nesciunt sapiente ea proident.
-                  Ad vegan excepteur butcher vice lomo. Leggings occaecat craft
-                  beer farm-to-table, raw denim aesthetic synth nesciunt you
-                  probably haven't heard of them accusamus labore sustainable
-                  VHS.
-                </div>
-              </div>
-            </div>
-          </div>
+      <div className="container-fluid">
+        <div className="text-center">
+          <img
+            src={EmployementIcon}
+            alt=""
+            height="100"
+            width="100"
+            className="mb-0 mr-3"
+          />
+          <h2 className="mt-0">Employment</h2>
         </div>
+        {employment.length > 0 ? (
+          <div className="row">
+            {employment.map((empDetails, index) => {
+              return (
+                <div className="col-sm-4" key={index}>
+                  <div id="accordion">
+                    <div className="card">
+                      <div className="card-header text-center" id="headingOne">
+                        <strong className="pb-0">
+                          {empDetails.company.toUpperCase()}
+                        </strong>
+                        <br />
+                        <span className="badge  bg-info text-dark mr-2 pt-0">
+                          {empDetails.duration}
+                        </span>
+                        <span className="badge  bg-info text-dark mr-2 pt-0">
+                          {empDetails.availability}
+                        </span>
+                        <button
+                          className="btn btn-link"
+                          data-toggle="collapse"
+                          data-target={`#${empDetails.company}`}
+                          aria-controls="collapseOne"
+                          aria-expanded="false"
+                          id="toggleAchievements"
+                          onClick={(event) => toggleAchievements(event)}
+                          value={empDetails.company}
+                        >
+                          {toggleAchvmnts ? (
+                            <span>
+                              Close <FaAngleUp size={20} />
+                            </span>
+                          ) : (
+                            <span>
+                              Achievements <FaAngleDown size={20} />
+                            </span>
+                          )}
+                        </button>
+                      </div>
+
+                      <div
+                        id={empDetails.company}
+                        className="collapse"
+                        aria-labelledby="headingOne"
+                        data-parent="#accordion"
+                      >
+                        <div className="card-body">
+                          {empDetails.accomplishments.map((accomp, index) => {
+                            return (
+                              <span
+                                className="badge rounded-pill bg-dark text-light mr-2"
+                                key={index}
+                              >
+                                {accomp}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <AdminDetailsNotAvailable message="Employment" />
+        )}
       </div>
     </div>
   );

@@ -7,4 +7,8 @@
     font-family: 'Quicksand', sans-serif;
 
 }
+#toggleAchievements:focus{
+    outline: none;
+    box-shadow: none;
+}
 
