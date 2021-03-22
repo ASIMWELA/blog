@@ -13,7 +13,7 @@ export default function NavBar() {
   }, []);
   return (
     <div className="wave-container">
-      <nav className="navbar navbar-expand-lg navbar-secondary bg-secondary justify-content-end">
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark justify-content-end">
         <div className="container-fluid">
           <Link to="/" className="navbar-brand">
             <BiCodeAlt size={50} style={{ color: "white" }} />
@@ -65,7 +65,7 @@ export default function NavBar() {
       </nav>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
         <path
-          fill="#8E24AA"
+          fill="#203045"
           fillOpacity="1"
           d="M0,0L60,21.3C120,43,240,85,360,106.7C480,128,600,128,720,112C840,96,960,64,1080,69.3C1200,75,1320,117,1380,138.7L1440,160L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"
         ></path>

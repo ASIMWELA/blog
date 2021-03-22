@@ -79,10 +79,7 @@ export default function Profile() {
     setToggleAchievement(!toggleAchvmnts);
   };
   const dynamicClasses = () => {
-    const awardCls = [
-      "badge rounded-pill bg-secondary text-light ml-1",
-      "badge rounded-pill bg-dark text-light ml-1",
-    ];
+    const awardCls = ["badge rounded-pill bg-dark text-light ml-1"];
 
     const random = Math.floor(Math.random() * awardCls.length);
 
