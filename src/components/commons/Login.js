@@ -1,57 +1,127 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { BiCodeAlt } from "react-icons/bi";
+import { FaUser } from "react-icons/fa";
+import { useHistory } from "react-router-dom";
+import { API_BASE_URL } from "../../constants";
+import { useRecoilState } from "recoil";
+import { loggedInAdmin } from "../../recoilState";
+import Axios from "axios";
 import "./login.css";
 
 export default function Login() {
-  return (
-    <div className="container-fluid">
-      <div className="row main-content bg-success text-center">
-        <div className="col-md-4 text-center company__info">
-          <span className="company__logo">
-            <h2>
-              <BiCodeAlt size={70} />
-            </h2>
-          </span>
-          <h4 className="company_title">Your Company Logo</h4>
-        </div>
-        <div className="col-md-8 col-xs-12 col-sm-12 login_form ">
-          <div className="container-fluid">
-            <div className="row">
-              <h2 classNameName="text-center">Log In</h2>
-            </div>
-            <div className="row">
-              <form control="" className="form-group">
-                <div className="row">
-                  <input
-                    type="text"
-                    name="username"
-                    id="username"
-                    className="form__input"
-                    placeholder="Username"
-                  />
-                </div>
-                <div className="row">
-                  <span className="fa fa-lock"></span>
-                  <input
-                    type="password"
-                    name="password"
-                    id="password"
-                    className="form__input"
-                    placeholder="Password"
-                  />
-                </div>
+  const history = useHistory();
+  // eslint-disable-next-line no-unused-vars
+  const [logInAdmin, setLoggedInAdmin] = useRecoilState(loggedInAdmin);
+  const [state, setState] = useState({
+    userName: "",
+    password: "",
+    isSubmitting: false,
+    errorMessage: null,
+  });
+  const handleInputChange = (event) => {
+    setState({
+      ...state,
+      [event.target.name]: event.target.value,
+    });
+  };
 
-                <div className="row">
-                  <input type="submit" value="Submit" className="btn" />
-                </div>
-              </form>
-            </div>
-            <div class="row">
-              <p>
-                Don't have an account? <a href="#">Register Here</a>
-              </p>
-            </div>
+  const handleFormSubmit = (event) => {
+    event.preventDefault();
+    setState({
+      ...state,
+      isSubmitting: true,
+      errorMessage: null,
+    });
+    Axios({
+      method: "post",
+      url: API_BASE_URL + "/auth/login",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      data: JSON.stringify({
+        userName: state.userName,
+        password: state.password,
+      }),
+    })
+      .then((user) => {
+        const roles = user.data.user.roles.map((role) => role.name);
+        if (roles.length > 1 && roles.includes("ROLE_ADMIN")) {
+          setLoggedInAdmin(user.data);
+          history.push("/admin");
+        } else {
+          localStorage.setItem("user", JSON.stringify(user.data));
+          history.push("/user");
+        }
+      })
+      .catch((error) => {
+        setState({
+          ...state,
+          isSubmitting: false,
+          errorMessage: "Username, password do not match",
+        });
+      });
+  };
+
+  return (
+    <div className="container-fluid mt-5">
+      <div className="wrapper fadeInDown">
+        <div id="formContent">
+          <div className="fadeIn first">
+            <FaUser id="icon" size={60} />
+          </div>
+
+          <form onSubmit={handleFormSubmit}>
+            <input
+              type="text"
+              id="login"
+              className="fadeIn second"
+              placeholder="Username"
+              name="userName"
+              onChange={handleInputChange}
+              value={state.userName}
+            />
+
+            <input
+              type="password"
+              id="password"
+              className="fadeIn third"
+              placeholder="password"
+              onChange={handleInputChange}
+              value={state.password}
+              name="password"
+              onKeyPress={(event) => {
+                if (event.key === "Enter") {
+                  handleFormSubmit(event);
+                }
+              }}
+            />
+
+            <input
+              type="submit"
+              className="btn btn-dark"
+              value={state.isSubmitting ? "Authenticating..." : "Log In"}
+              disabled={state.isSubmitting}
+            />
+          </form>
+          <Link className="underlineHover" to="/reset-password">
+            Forgot Password?
+          </Link>
+          <div id="formFooter">
+            <Link
+              className="underlineHover mr-4"
+              to="/"
+              style={{ float: "left" }}
+            >
+              Home
+            </Link>
+            <small>
+              <span className="ml-5 pb-2" style={{ float: "right" }}>
+                Not a member?{" "}
+                <Link className="underlineHover mr-4" to="/reset-password">
+                  Sign Up
+                </Link>
+              </span>
+            </small>
           </div>
         </div>
       </div>
