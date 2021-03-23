@@ -11,6 +11,7 @@ import {
   Login,
   PageLoader,
 } from "./components/commons";
+import { AdminSidebar } from "./components/admin";
 import ApiUtil from "./ApiUtil/ApiUtilityClass";
 
 import { admin, projects } from "./recoilState";
@@ -81,6 +82,7 @@ function App() {
       ) : (
         <Switch>
           <Route path="/login" component={Login} />
+          <Route path="/admin" component={AdminSidebar} />
           <Route component={RoutesWithNavBar} />
         </Switch>
       )}
