@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles/custom-theme.scss";
+import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import { RecoilRoot } from "recoil";
 import { recoilPersist } from "recoil-persist";
 import reportWebVitals from "./reportWebVitals";
@@ -15,16 +16,14 @@ const { RecoilPersist, updateState } = recoilPersist([], {
 });
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Router>
-      <RecoilRoot initializeState={updateState}>
-        <SmoothProvider skew={true} ease={0.06}>
-          <App />
-        </SmoothProvider>
-        <RecoilPersist />
-      </RecoilRoot>
-    </Router>
-  </React.StrictMode>,
+  <Router>
+    <RecoilRoot initializeState={updateState}>
+      <SmoothProvider skew={true} ease={0.06}>
+        <App />
+      </SmoothProvider>
+      <RecoilPersist />
+    </RecoilRoot>
+  </Router>,
   document.getElementById("root")
 );
 

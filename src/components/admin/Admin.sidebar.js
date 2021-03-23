@@ -9,10 +9,19 @@ import {
 } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import "./admin.sidebar.scss";
-import { FaGem } from "react-icons/fa";
+import { FaEnvelope, FaGem, FaGraduationCap, FaUser } from "react-icons/fa";
+import { BsBriefcaseFill } from "react-icons/bs";
 import { BiCodeAlt } from "react-icons/bi";
-import { AiOutlineMenu, AiOutlineLeft } from "react-icons/ai";
+import { AiOutlineMenu, AiOutlineLeft, AiOutlineSetting } from "react-icons/ai";
 import "./sidenav.css";
+import {
+  AdminProjects,
+  AdminSkills,
+  AdminProfile,
+  AdminEducation,
+  AdminMessaging,
+  AdminExperience,
+} from "./";
 
 export default function AdminSidebar() {
   const [toggleMenu, setToggle] = useState(true);
@@ -50,39 +59,43 @@ export default function AdminSidebar() {
             onClick={(event) => changeComponent(event)}
             id="Projects"
           >
-            <MenuItem icon={<FaGem />}>Projects</MenuItem>
+            <MenuItem icon={<FaGem size={20} />}>Projects</MenuItem>
           </Menu>
           <Menu
             iconShape="square"
             onClick={(event) => changeComponent(event)}
             id="Education"
           >
-            <MenuItem icon={<FaGem />}>Education</MenuItem>
+            <MenuItem icon={<FaGraduationCap size={20} />}>Education</MenuItem>
           </Menu>
           <Menu
             iconShape="square"
             onClick={(event) => changeComponent(event)}
             id="Profile"
           >
-            <MenuItem icon={<FaGem />}>Profile</MenuItem>
+            <MenuItem icon={<FaUser size={20} />}>Profile</MenuItem>
           </Menu>
           <Menu
             iconShape="square"
             onClick={(event) => changeComponent(event)}
             id="Experience"
           >
-            <MenuItem icon={<FaGem />}>Experience</MenuItem>
+            <MenuItem icon={<BsBriefcaseFill size={20} />}>Experience</MenuItem>
           </Menu>
           <Menu
             iconShape="square"
             onClick={(event) => changeComponent(event)}
             id="Skills"
           >
-            <MenuItem icon={<FaGem />}>Skills</MenuItem>
+            <MenuItem icon={<AiOutlineSetting size={20} />}>Skills</MenuItem>
           </Menu>
-          <Menu></Menu>
-          <Menu></Menu>
-          <Menu></Menu>
+          <Menu
+            iconShape="square"
+            onClick={(event) => changeComponent(event)}
+            id="Messaging"
+          >
+            <MenuItem icon={<FaEnvelope size={20} />}>Messaging</MenuItem>
+          </Menu>
         </SidebarContent>
         <SidebarFooter>
           <Menu iconShape="square">
@@ -100,7 +113,7 @@ export default function AdminSidebar() {
       >
         {" "}
         <ul
-          className="nav justify-content-center "
+          className="nav justify-content-end "
           style={{
             width: "100%",
             height: "10%",
@@ -129,6 +142,14 @@ export default function AdminSidebar() {
               </li>
             </ol>
           </nav>
+        </div>
+        <div style={{ width: "100%", overflowY: "scroll" }}>
+          {componentSlug === "Projects" && <AdminProjects />}
+          {componentSlug === "Skills" && <AdminSkills />}
+          {componentSlug === "Experience" && <AdminExperience />}
+          {componentSlug === "Profile" && <AdminProfile />}
+          {componentSlug === "Messaging" && <AdminMessaging />}
+          {componentSlug === "Education" && <AdminEducation />}
         </div>
       </main>
     </div>

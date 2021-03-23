@@ -26,7 +26,7 @@ export const loggedInAdmin = atom({
 
 export const projects = atom({
   key: "projects",
-  default: {},
+  default: [],
   persistence_UNSTABLE: {
     type: "projects",
   },
