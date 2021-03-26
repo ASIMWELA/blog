@@ -73,9 +73,6 @@ export default function Profile() {
   }, [admin]);
 
   const toggleAchievements = (event) => {
-    const elem = document.getElementById(event.currentTarget.value);
-
-    console.log(elem);
     setToggleAchievement(!toggleAchvmnts);
   };
   const dynamicClasses = () => {
@@ -86,7 +83,6 @@ export default function Profile() {
     return awardCls[random];
   };
 
-  console.log(employment);
   return (
     <div className="container-fluid profile-card">
       <div className="row">
@@ -159,9 +155,9 @@ export default function Profile() {
           <div className="container-fluid">
             <div className="row">
               <div className="col-sm-8 text-center">
-                <h2 className="text-center">
+                <h3 className="text-center">
                   <FaGraduationCap /> My Education
-                </h2>
+                </h3>
                 <div className="text-center">
                   I have Enjoyed a Thrilling Career in Education. This can be
                   demonsrated by my awards. Below are my education Institutions
@@ -220,7 +216,7 @@ export default function Profile() {
               <div>
                 <span className="d-flex">
                   <IoMdSettings size={50} />{" "}
-                  <h2 className="mt-1">Experience</h2>
+                  <h3 className="mt-1">Experience</h3>
                 </span>
                 <div className="container overflow-hidden">
                   {experience.length > 0 ? (
@@ -275,7 +271,7 @@ export default function Profile() {
             width="100"
             className="mb-0 mr-3"
           />
-          <h2 className="mt-0">Employment</h2>
+          <h3 className="mt-0">Employment</h3>
         </div>
         {employment.length > 0 ? (
           <div className="row">

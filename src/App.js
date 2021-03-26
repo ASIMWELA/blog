@@ -12,8 +12,7 @@ import {
   PageLoader,
 } from "./components/commons";
 import { AdminSidebar } from "./components/admin";
-import ApiUtil from "./ApiUtil/ApiUtilityClass";
-
+import ApiUtil from "./ApiUtil/ApiUtil";
 import { admin, projects } from "./recoilState";
 import { useRecoilState } from "recoil";
 

@@ -31,7 +31,22 @@ class ApiUtil {
       return admin;
     }
   };
+  static authenticateAdmin = () => {
+    let adminRole = null;
+    let arrayLength = 0;
+    let admin = [];
+    if (JSON.parse(localStorage.getItem("data")).loggedInAdmin) {
+      admin = JSON.parse(localStorage.getItem("data")).loggedInAdmin.user.roles;
+    }
 
+    adminRole = admin.find((role) => {
+      return role.name.includes("ROLE_ADMIN");
+    });
+
+    arrayLength = Boolean(admin.length >= 2);
+
+    return Boolean(adminRole) && arrayLength ? true : false;
+  };
   static getProjects = async () => {
     const projects = await Axios({
       url: API_BASE_URL + "/projects",
