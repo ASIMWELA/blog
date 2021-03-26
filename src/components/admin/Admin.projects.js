@@ -1,19 +1,27 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { projects } from "../../recoilState";
 import { useRecoilState } from "recoil";
 import BootstrapTable from "react-bootstrap-table-next";
 import cellEditFactory from "react-bootstrap-table2-editor";
+import { Modal } from "react-bootstrap";
 import { API_BASE_URL } from "../../constants";
 import ApiUtil from "../../ApiUtil/ApiUtil";
 import Axios from "axios";
-import "./adminproject.css";
+import "./admin.project.css";
 export default function AdminProjects({ authAdmin }) {
   const [projectList, setProjects] = useRecoilState(projects);
+  const [selectedProject, setSelected] = useState();
+  const [show, setModalShow] = useState(false);
+
   useEffect(() => {
     if (localStorage.data) {
       const projects = JSON.parse(localStorage.getItem("data")).projects;
-
-      setProjects(projects);
+      console.log(projects);
+      if (projects) {
+        setProjects(projects);
+      } else {
+        setProjects([{}]);
+      }
     }
   }, [setProjects]);
 
@@ -140,28 +148,72 @@ export default function AdminProjects({ authAdmin }) {
     clickToSelect: true,
     clickToEdit: true,
     onSelect: (row, isSelect, rowIndex, e) => {
-      console.log(row.name);
-      console.log(isSelect);
-      console.log(rowIndex);
-      console.log(e);
+      setModalShow(true);
+      setSelected(row.name);
     },
   };
 
+  const deleteProject = () => {
+    Axios.delete(API_BASE_URL + "/projects/" + selectedProject, {
+      headers: {
+        Authorization: `Bearer ${authAdmin.access_TOKEN}`,
+      },
+    })
+      .then((res) => {
+        if (res.data.code === 200) {
+          refreshProjectData();
+          setModalShow(false);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setModalShow(false);
+      });
+  };
+
+  const noData = () => {
+    return <div>No Data</div>;
+  };
   return (
-    <BootstrapTable
-      bootstrap4
-      remote={{ cellEdit: true }}
-      keyField="name"
-      defaultSorted={defaultSorted}
-      data={projectList}
-      columns={tableColumns}
-      selectRow={selectRow}
-      onTableChange={onTableChange}
-      cellEdit={cellEditFactory({
-        mode: "dbclick",
-        blurToSave: true,
-      })}
-      wrapperClasses="table-responsive"
-    />
+    <div className="container-fluid">
+      <Modal
+        show={show}
+        onHide={() => setModalShow(false)}
+        animation={true}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Modal heading</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are You Sure?</Modal.Body>
+        <Modal.Footer>
+          <button
+            className="btn btn-secondary"
+            onClick={() => setModalShow(false)}
+          >
+            Return
+          </button>
+          <button className=" btn btn-danger" onClick={deleteProject}>
+            Yes
+          </button>
+        </Modal.Footer>
+      </Modal>
+      <BootstrapTable
+        bootstrap4
+        remote={{ cellEdit: true }}
+        noDataIndication={noData}
+        keyField="name"
+        defaultSorted={defaultSorted}
+        data={projectList}
+        columns={tableColumns}
+        selectRow={selectRow}
+        onTableChange={onTableChange}
+        cellEdit={cellEditFactory({
+          mode: "dbclick",
+          blurToSave: true,
+        })}
+        classes="table-responsive"
+      />
+    </div>
   );
 }

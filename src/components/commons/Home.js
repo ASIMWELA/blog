@@ -7,6 +7,7 @@ import proGrammingLogo from "../../asserts/programming-logo.png";
 import "./home.css";
 
 import { careerIntro, animateRight } from "../../animations/Animate";
+import { AdminDetailsNotAvailable } from ".";
 
 export default function Home() {
   const [admin, setAdmin] = useState(null);
@@ -158,7 +159,7 @@ export default function Home() {
                 Designing Your Mind!
               </h2>
               <div className="descriptionPara">
-                {projects.length > 0 && (
+                {projects.length > 0 ? (
                   <span>
                     I like to think that my work is a living, breathing
                     embodiment of my passion for discovery. Here is some of it!{" "}
@@ -199,6 +200,8 @@ export default function Home() {
                       })}
                     </div>
                   </span>
+                ) : (
+                  <AdminDetailsNotAvailable message="Projects" />
                 )}
               </div>
             </div>

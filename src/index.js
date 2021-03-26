@@ -1,12 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
-import "./styles/custom-theme.scss";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import { RecoilRoot } from "recoil";
 import { recoilPersist } from "recoil-persist";
 import reportWebVitals from "./reportWebVitals";
+import "./styles/custom-theme.scss";
 import { BrowserRouter as Router } from "react-router-dom";
 import { SmoothProvider } from "react-smooth-scrolling";
 
