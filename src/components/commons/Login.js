@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
@@ -10,6 +10,7 @@ import "./login.css";
 
 export default function Login() {
   const history = useHistory();
+  let err = useRef();
   // eslint-disable-next-line no-unused-vars
   const [logInAdmin, setLoggedInAdmin] = useRecoilState(loggedInAdmin);
   const [state, setState] = useState({
@@ -18,6 +19,9 @@ export default function Login() {
     isSubmitting: false,
     errorMessage: null,
   });
+  useEffect(() => {
+    document.querySelector("#err").style = "display:none";
+  }, []);
   const handleInputChange = (event) => {
     setState({
       ...state,
@@ -54,11 +58,22 @@ export default function Login() {
         }
       })
       .catch((error) => {
-        setState({
-          ...state,
-          isSubmitting: false,
-          errorMessage: "Username, password do not match",
-        });
+        if (error.message.includes(401)) {
+          console.log(err);
+          document.querySelector("#err").style = "display:block";
+          setState({
+            ...state,
+            isSubmitting: false,
+            errorMessage: "Username, password do not match",
+          });
+        } else {
+          document.querySelector("#err").style = "display:block";
+          setState({
+            ...state,
+            isSubmitting: false,
+            errorMessage: error.message,
+          });
+        }
       });
   };
 
@@ -69,7 +84,14 @@ export default function Login() {
           <div className="fadeIn first">
             <FaUser id="icon" size={60} />
           </div>
-
+          <div
+            className="alert alert-danger mt-1 mb-0"
+            id="err"
+            role="alert"
+            style={{ maxWidth: "64%", marginLeft: "17%", display: "none" }}
+          >
+            {state.errorMessage}
+          </div>
           <form onSubmit={handleFormSubmit}>
             <input
               type="text"

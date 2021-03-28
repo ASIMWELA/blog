@@ -47,7 +47,11 @@ function App() {
           console.log(err);
         });
 
-      setProjects(projects);
+      if (!projects) {
+        setProjects([]);
+      } else {
+        setProjects(projects);
+      }
     };
 
     fetchAdmin();

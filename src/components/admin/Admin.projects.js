@@ -14,13 +14,13 @@ export default function AdminProjects({ authAdmin }) {
   const [show, setModalShow] = useState(false);
 
   useEffect(() => {
+    // setProjects(pro);
     if (localStorage.data) {
       const projects = JSON.parse(localStorage.getItem("data")).projects;
-      console.log(projects);
-      if (projects) {
+      if (projects != null) {
         setProjects(projects);
       } else {
-        setProjects([{}]);
+        setProjects([]);
       }
     }
   }, [setProjects]);
@@ -34,6 +34,9 @@ export default function AdminProjects({ authAdmin }) {
     {
       dataField: "description",
       text: "Description",
+      headerStyle: (colum, colIndex) => {
+        return { width: "47%" };
+      },
       validator: (newValue, row, column, done) => {
         if (newValue === "") {
           return done({
@@ -84,7 +87,12 @@ export default function AdminProjects({ authAdmin }) {
       .catch((err) => {
         console.log(err);
       });
-    setProjects(projects);
+
+    if (projects != null) {
+      setProjects(projects);
+    } else {
+      setProjects([]);
+    }
   };
   const onTableChange = (
     type,
@@ -148,7 +156,6 @@ export default function AdminProjects({ authAdmin }) {
     clickToSelect: true,
     clickToEdit: true,
     onSelect: (row, isSelect, rowIndex, e) => {
-      setModalShow(true);
       setSelected(row.name);
     },
   };
@@ -183,7 +190,7 @@ export default function AdminProjects({ authAdmin }) {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Delete {selectedProject}</Modal.Title>
         </Modal.Header>
         <Modal.Body>Are You Sure?</Modal.Body>
         <Modal.Footer>
