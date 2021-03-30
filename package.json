@@ -15,6 +15,7 @@
     "react-bootstrap-table-next": "^4.0.3",
     "react-bootstrap-table2-editor": "^1.4.0",
     "react-dom": "^17.0.1",
+    "react-hook-form": "^6.15.5",
     "react-icons": "^4.2.0",
     "react-pro-sidebar": "^0.6.0",
     "react-router-dom": "^5.2.0",

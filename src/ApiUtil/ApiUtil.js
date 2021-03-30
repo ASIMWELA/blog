@@ -31,6 +31,18 @@ class ApiUtil {
       return admin;
     }
   };
+
+  static countNewMessages = async (senderId, recipientId, token) => {
+    const res = await Axios({
+      url:
+        API_BASE_URL + "/messages/" + senderId + "/" + recipientId + "/count",
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((res) => res.data);
+    return res;
+  };
   static authenticateAdmin = () => {
     let adminRole = null;
     let arrayLength = 0;

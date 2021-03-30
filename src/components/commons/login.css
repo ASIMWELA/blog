@@ -103,7 +103,7 @@ a {
     transform: scale(0.95);
   }
   
-  input[type=text] {
+  #login {
     background-color: #f6f6f6;
     border: none;
     color: #0d0d0d;
@@ -144,7 +144,7 @@ a {
     -webkit-border-radius: 5px 5px 5px 5px;
     border-radius: 5px 5px 5px 5px;
   }
-  input[type=text]:focus {
+  #login:focus {
     background-color: #fff;
     border-bottom: 2px solid #203045;
     transform: scale(1.1);
@@ -158,7 +158,7 @@ a {
     transition-duration: 0.4s;
   }
   
-  input[type=text]:placeholder {
+  #login:placeholder {
     color: #cccccc;
   }
   

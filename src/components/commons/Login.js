@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
@@ -10,7 +10,6 @@ import "./login.css";
 
 export default function Login() {
   const history = useHistory();
-  let err = useRef();
   // eslint-disable-next-line no-unused-vars
   const [logInAdmin, setLoggedInAdmin] = useRecoilState(loggedInAdmin);
   const [state, setState] = useState({
@@ -59,7 +58,6 @@ export default function Login() {
       })
       .catch((error) => {
         if (error.message.includes(401)) {
-          console.log(err);
           document.querySelector("#err").style = "display:block";
           setState({
             ...state,

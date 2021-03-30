@@ -8,3 +8,4 @@ export { default as Default } from "./Default";
 export { default as Projects } from "./Projects";
 export { default as PageLoader } from "./PageLoader";
 export { default as AdminDetailsNotAvailable } from "./AdminDetailsNotAvailable";
+export { default as FormInput } from "./FormInput";

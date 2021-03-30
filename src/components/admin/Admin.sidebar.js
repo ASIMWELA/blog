@@ -9,13 +9,16 @@ import {
 } from "react-pro-sidebar";
 import "react-pro-sidebar/dist/css/styles.css";
 import "./admin.sidebar.scss";
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import { FaEnvelope, FaGem, FaGraduationCap, FaUser } from "react-icons/fa";
 import { BsBriefcaseFill } from "react-icons/bs";
 import { BiCodeAlt } from "react-icons/bi";
+import { IoMdLogOut } from "react-icons/io";
 import { AiOutlineMenu, AiOutlineLeft, AiOutlineSetting } from "react-icons/ai";
 import ApiUtil from "../../ApiUtil/ApiUtil";
 import "./sidenav.css";
+import { useRecoilState } from "recoil";
+import { loggedInAdmin } from "../../recoilState";
 import {
   AdminProjects,
   AdminSkills,
@@ -27,6 +30,9 @@ import {
 
 export default function AdminSidebar() {
   const [toggleMenu, setToggle] = useState(true);
+  const history = useHistory();
+  // eslint-disable-next-line no-unused-vars
+  const [authAdmin, setAuthAdmin] = useRecoilState(loggedInAdmin);
   const [componentSlug, setComponentSlug] = useState("Projects");
   const [admin, setAdmin] = useState();
 
@@ -39,13 +45,19 @@ export default function AdminSidebar() {
       const admn = JSON.parse(localStorage.getItem("data")).loggedInAdmin;
 
       setAdmin(admn);
+      setAuthAdmin(admn);
     }
-  }, [setAdmin]);
+  }, [setAdmin, setAuthAdmin]);
   const toggleSideBar = () => {
     setToggle(!toggleMenu);
   };
   const changeComponent = (event) => {
     setComponentSlug(event.currentTarget.id);
+  };
+
+  const logout = () => {
+    setAuthAdmin();
+    history.push("/login");
   };
 
   return (
@@ -134,7 +146,7 @@ export default function AdminSidebar() {
           >
             {" "}
             <ul
-              className="nav justify-content-end "
+              className="nav justify-content-end bg-dark text-info"
               style={{
                 width: "100%",
                 height: "10%",
@@ -151,10 +163,13 @@ export default function AdminSidebar() {
                 <h5 className="nav-link"> Link</h5>
               </li>
               <li className="nav-item">
-                <h5 className="nav-link">Disabled</h5>
+                <h6 className="nav-link" onClick={logout}>
+                  Logout
+                  <IoMdLogOut />
+                </h6>
               </li>
             </ul>
-            <div>
+            <div className="m-0 p-0">
               <nav aria-label="breadcrumb">
                 <ol className="breadcrumb">
                   <li className="breadcrumb-item">Admin</li>
@@ -164,14 +179,19 @@ export default function AdminSidebar() {
                 </ol>
               </nav>
             </div>
-            <div style={{ width: "100%", overflowY: "scroll" }}>
+            <div
+              style={{ width: "100%", overflowY: "scroll" }}
+              className="m-0 p-0"
+            >
               {componentSlug === "Projects" && (
                 <AdminProjects authAdmin={admin} />
               )}
               {componentSlug === "Skills" && <AdminSkills />}
               {componentSlug === "Experience" && <AdminExperience />}
               {componentSlug === "Profile" && <AdminProfile />}
-              {componentSlug === "Messaging" && <AdminMessaging />}
+              {componentSlug === "Messaging" && (
+                <AdminMessaging authAdmin={admin} />
+              )}
               {componentSlug === "Education" && <AdminEducation />}
             </div>
           </main>
