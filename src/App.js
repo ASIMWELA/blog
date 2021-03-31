@@ -11,14 +11,15 @@ import {
   Login,
   PageLoader,
 } from "./components/commons";
-import ApiUtil from "./ApiUtil/ApiUtilityClass";
-
+import { AdminSidebar } from "./components/admin";
+import ApiUtil from "./ApiUtil/ApiUtil";
 import { admin, projects } from "./recoilState";
 import { useRecoilState } from "recoil";
 
 function App() {
   // eslint-disable-next-line no-unused-vars
   const [pageAdmin, setAdmin] = useRecoilState(admin);
+  // eslint-disable-next-line no-unused-vars
   const [projectsData, setProjects] = useRecoilState(projects);
 
   //no data yet, deafult to loading
@@ -46,7 +47,11 @@ function App() {
           console.log(err);
         });
 
-      setProjects(projects);
+      if (!projects) {
+        setProjects([]);
+      } else {
+        setProjects(projects);
+      }
     };
 
     fetchAdmin();
@@ -80,6 +85,7 @@ function App() {
       ) : (
         <Switch>
           <Route path="/login" component={Login} />
+          <Route path="/admin" component={AdminSidebar} />
           <Route component={RoutesWithNavBar} />
         </Switch>
       )}

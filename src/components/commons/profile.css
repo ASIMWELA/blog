@@ -1,0 +1,14 @@
+.backround-cover{
+        background-color: #203045;
+        
+}
+
+.profile-card{
+    font-family: 'Quicksand', sans-serif;
+
+}
+#toggleAchievements:focus{
+    outline: none;
+    box-shadow: none;
+}
+

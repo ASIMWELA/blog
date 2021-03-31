@@ -2,7 +2,7 @@ import { atom } from "recoil";
 
 export const admin = atom({
   key: "admin",
-  default: null,
+  default: {},
   persistence_UNSTABLE: {
     type: "admin",
   },
@@ -10,7 +10,7 @@ export const admin = atom({
 
 export const loggedInUser = atom({
   key: "loggedInUser",
-  default: null,
+  default: {},
   persistence_UNSTABLE: {
     type: "loggedInUser",
   },
@@ -18,7 +18,7 @@ export const loggedInUser = atom({
 
 export const loggedInAdmin = atom({
   key: "loggedInAdmin",
-  default: null,
+  default: {},
   persistence_UNSTABLE: {
     type: "loggedInAdmin",
   },
@@ -26,7 +26,7 @@ export const loggedInAdmin = atom({
 
 export const projects = atom({
   key: "projects",
-  default: null,
+  default: [],
   persistence_UNSTABLE: {
     type: "projects",
   },
@@ -34,7 +34,7 @@ export const projects = atom({
 
 export const chatActiveContact = atom({
   key: "chatActiveContact",
-  default: null,
+  default: {},
   persistence_UNSTABLE: {
     type: "chatActiveContact",
   },
