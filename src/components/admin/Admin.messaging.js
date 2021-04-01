@@ -6,19 +6,44 @@ import ApiUtil from "../../ApiUtil/ApiUtil";
 import { useRecoilState } from "recoil";
 import { chatActiveContact } from "../../recoilState";
 import { BsFillCircleFill } from "react-icons/bs";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaPaperPlane } from "react-icons/fa";
+import { API_BASE_MESSAGING_URL } from "../../constants";
+import ScrollToBottom from "react-scroll-to-bottom";
 import "./messaging.css";
+import { css } from "@emotion/css";
 
+let stompClient = null;
 export default function AdminMessaging({ authAdmin }) {
   const [contacts, setContacts] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [privateMessages, setPrivateChatMessages] = useState([]);
   const [activeContact, setActiveContact] = useRecoilState(chatActiveContact);
+  let initialState = {
+    onlineUsers: null,
+    channelConnected: false,
+    error: "",
+    privateChatMessage: "",
+    bulkMessages: null,
+    openNotifications: false,
+  };
+
+  let [state, setState] = useState(initialState);
 
   useEffect(() => {
+    connectToServer();
     loadContacts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  useEffect(() => {
+    if (activeContact === undefined) return;
+    ApiUtil.findChatMessages(
+      activeContact.uid,
+      authAdmin.user.uid,
+      authAdmin.access_TOKEN
+    ).then((msg) => setPrivateChatMessages(msg));
+    loadContacts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeContact]);
   const applyContactColors = () => {
     const colors = [
       "text-primary",
@@ -26,12 +51,108 @@ export default function AdminMessaging({ authAdmin }) {
       "text-success",
       "text-warning",
       "text-danger",
-      "text-dark",
     ];
     const randomColor = Math.floor(Math.random() * colors.length);
 
     return colors[randomColor];
   };
+
+  const connectToServer = () => {
+    if (authAdmin) {
+      var Stomp = require("stompjs");
+      var SockJS = require("sockjs-client");
+      SockJS = new SockJS(API_BASE_MESSAGING_URL + "/ws");
+      stompClient = Stomp.over(SockJS);
+      //disable debug messages
+      // stompClient.debug = null;
+      stompClient.connect({}, onConnected, onError);
+    }
+  };
+
+  const onConnected = () => {
+    setState({
+      ...state,
+      channelConnected: true,
+    });
+    // Subscribing to the private topic
+
+    stompClient.subscribe(
+      "/user/" + authAdmin.user.uid + "/queue/messages",
+      onPrivateMessageReceived,
+      { id: "privateChat" }
+    );
+
+    stompClient.send(
+      "/app/toggleAdmin",
+      {},
+      JSON.stringify({ sender: authAdmin.user.userName, type: "JOIN" })
+    );
+  };
+
+  const onError = (error) => {
+    setState({
+      ...state,
+      error:
+        "Could not connect you to the Chat Room Server. Please refresh this page and try again!",
+    });
+  };
+  const onPrivateMessageReceived = (payload) => {
+    const notification = JSON.parse(payload.body);
+
+    const active = JSON.parse(localStorage.getItem("data")).chatActiveContact;
+
+    if (!active.uid) return;
+    if (active.uid === notification.senderId) {
+      ApiUtil.findChatMessages(
+        active.uid,
+        authAdmin.user.uid,
+        authAdmin.access_TOKEN
+      ).then((msg) => {
+        const newMessages = [...privateMessages];
+        msg.forEach((m) => newMessages.push(m));
+        setPrivateChatMessages(newMessages);
+      });
+    } else {
+      //TODO:notify new message
+    }
+    loadContacts();
+  };
+  const sendPrivateMessage = () => {
+    const message = {
+      senderId: authAdmin.user.uid,
+      recipientId: activeContact.uid,
+      sender: authAdmin.user.userName,
+      receiver: activeContact.userName,
+      content: state.privateChatMessage,
+    };
+
+    stompClient.send("/app/privateChat", {}, JSON.stringify(message));
+
+    const newMessages = [...privateMessages];
+    newMessages.push(message);
+    setPrivateChatMessages(newMessages);
+  };
+
+  function formatAMPM(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    var strTime = hours + ":" + minutes + " " + ampm;
+    return strTime;
+  }
+  const handleTyping = (event) => {
+    setState({
+      ...state,
+      [event.target.name]: event.target.value,
+    });
+  };
+  const ROOT_CSS = css({
+    height: 310,
+    width: 500,
+  });
   const loadContacts = async () => {
     const promise = ApiUtil.getUsers().then((users) => {
       return users._embedded.userList.map((contact) =>
@@ -53,14 +174,12 @@ export default function AdminMessaging({ authAdmin }) {
         const usersOnline = subscribers.filter((user) => user.online);
         setOnlineUsers(usersOnline);
         setContacts(subscribers);
-        if (activeContact === undefined && subscribers.length > 0) {
+        if (!("userName" in activeContact) && subscribers.length > 0) {
           setActiveContact(subscribers[0]);
         }
       })
     );
   };
-
-  console.log(onlineUsers);
 
   return (
     <Container fluid id="messaging" className="mb-0">
@@ -109,7 +228,11 @@ export default function AdminMessaging({ authAdmin }) {
                       }
                       key={user.userName}
                     >
-                      <span className="d-inline-block ">
+                      <span
+                        className="d-inline-block "
+                        onClick={() => setActiveContact(user)}
+                        style={{ cursor: "pointer" }}
+                      >
                         <h5 className="rounded-circle border border-teal pt-2 pl-3 pr-1 mx-1 my-2 bg-teal">
                           <strong className={applyContactColors()}>
                             {user.userName.charAt(0).toUpperCase()}
@@ -126,7 +249,7 @@ export default function AdminMessaging({ authAdmin }) {
                 })}
               </span>
             ) : (
-              <div>No Active Users</div>
+              <small>No Active Users</small>
             )}
           </div>
           <hr className="mt-0 p-0" />
@@ -147,21 +270,107 @@ export default function AdminMessaging({ authAdmin }) {
             <div style={{ height: "120px", overflowY: "auto" }}>
               {contacts.map((contact) => {
                 return (
-                  <div className="d-flex flex-row" key={contact.userName}>
+                  <div
+                    key={contact.userName}
+                    onClick={() => setActiveContact(contact)}
+                    style={{ cursor: "pointer" }}
+                    className={
+                      activeContact && contact.uid === activeContact.uid
+                        ? "d-flex flex-row bg-dark text-light active-contact"
+                        : "d-flex flex-row"
+                    }
+                  >
                     <h5 className="rounded-circle border border-teal py-2 px-3 mx-1 my-1 bg-teal">
                       <strong className={applyContactColors()}>
                         {contact.userName.charAt(0).toUpperCase()}
                       </strong>
                     </h5>
-                    <div className="mt-2">{contact.userName}</div>
+                    <div className="mt-1">{contact.userName}</div>
+                    {contact.newMessages !== undefined &&
+                      contact.newMessages > 0 && (
+                        <small className="mt-4 mr-2 preview">
+                          {contact.newMessages > 1 ? (
+                            <span
+                              className="badge badge-pill badge-dark "
+                              style={{ marginLeft: "-190%" }}
+                            >
+                              {contact.newMessages} new
+                            </span>
+                          ) : (
+                            <span
+                              className="badge badge-pill badge-dark"
+                              style={{ marginLeft: "-190%" }}
+                            >
+                              {contact.newMessages} new
+                            </span>
+                          )}
+                        </small>
+                      )}
                   </div>
                 );
               })}
             </div>
           </div>
         </Col>
-        <Col sm={6} md={6}>
-          1 of 1
+        <Col sm={4} md={6}>
+          <h5>Chat with</h5>
+          <h4>
+            <strong>{activeContact.userName}</strong>
+          </h4>
+          <div className="justify-content-center messages">
+            <ScrollToBottom debug={false} className={ROOT_CSS}>
+              <ul>
+                {privateMessages.map((msg, index) => (
+                  <li
+                    key={index}
+                    className={
+                      msg.senderId === authAdmin.user.uid ? "sent" : "replies"
+                    }
+                  >
+                    <p>
+                      {msg.content}
+                      <br />
+                      <small style={{ float: "right" }}>
+                        {msg.createdAt
+                          ? formatAMPM(new Date(msg.createdAt))
+                          : formatAMPM(new Date())}
+                      </small>
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </ScrollToBottom>
+          </div>
+
+          <div className="wrap">
+            <input
+              name="privateChatMessage"
+              id="privateChatMessage"
+              size="large"
+              className="form-control"
+              placeholder="Write your message..."
+              value={state.privateChatMessage}
+              onChange={handleTyping}
+              onKeyPress={(event) => {
+                if (event.key === "Enter") {
+                  sendPrivateMessage();
+                  setState({ ...state, privateChatMessage: "" });
+                }
+              }}
+            />
+            <span
+              onClick={() => {
+                sendPrivateMessage();
+                setState({ ...state, privateChatMessage: "" });
+              }}
+            >
+              <FaPaperPlane
+                size={25}
+                color={"#203045"}
+                style={{ marginLeft: "-3%" }}
+              />
+            </span>
+          </div>
         </Col>
         <Col sm={3} md={2}>
           1 of 1

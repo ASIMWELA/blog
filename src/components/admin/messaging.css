@@ -25,3 +25,80 @@
     pointer-events: none;
     color: #aaa;
 }
+
+.messages ul li p {
+    display: inline-block;
+    padding: 6px 11px;
+    max-width: 260px;
+    font-family: 'Times New Roman', Times, serif;
+    letter-spacing: 0.02rem;
+    min-width: 250px;
+    overflow-wrap: break-word;
+    line-height: 100%;
+    font-size: 16px;
+  }
+
+  .messages ul li {
+    display: inline-block;
+    clear: both;
+    margin: 1px 10px 1px 10px;
+    width: calc(100% - 25px);
+    font-size: 0.9em;
+  }
+
+  .messages ul li.replies p {
+    background: #435f7a;
+    color: #f5f5f5;
+    padding:3%;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    float: right;
+  }
+
+  .messages ul li.sent p {
+    padding:3%;
+    background: #f5f5f5;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    float: left;
+  }
+ /* Works on Firefox */
+* {
+    scrollbar-width: 5px;
+    scrollbar-color: #203045 inherit;
+  }
+  
+  /* Works on Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  *::-webkit-scrollbar-track {
+    background: inherit;
+  }
+  
+  *::-webkit-scrollbar-thumb {
+    background-color: #203045;
+    border-radius: 20px;
+    border: 3px solid inherit;
+  }
+  #privateChatMessage{
+    border-top: 0;
+    border-right: 0;
+    border-left: 0;
+    width: 65%;
+    margin-left: 12%;
+    -webkit-box-shadow: none;
+    box-shadow: none
+  }
+
+  #privateChatMessage:focus{
+        -webkit-box-shadow: none;
+        box-shadow: none;
+  }
+  .wrap{
+      display: flex;
+      flex-direction: row;
+  }

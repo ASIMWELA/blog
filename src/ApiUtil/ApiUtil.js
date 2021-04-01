@@ -32,6 +32,18 @@ class ApiUtil {
     }
   };
 
+  static findChatMessages = async (senderId, recipientId, token) => {
+    const messages = await Axios({
+      url: API_BASE_URL + "/messages/" + senderId + "/" + recipientId,
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((res) => res.data);
+
+    return messages;
+  };
+
   static countNewMessages = async (senderId, recipientId, token) => {
     const res = await Axios({
       url:

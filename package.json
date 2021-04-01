@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/css": "^11.1.3",
     "@testing-library/jest-dom": "^5.11.9",
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.3",
@@ -20,9 +21,13 @@
     "react-pro-sidebar": "^0.6.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "react-scroll-to-bottom": "^4.1.0",
     "react-smooth-scrolling": "^1.0.2",
     "recoil": "0.0.13",
     "recoil-persist": "^0.6.0",
+    "sockjs-client": "^1.5.1",
+    "stomp-client": "^0.9.0",
+    "stompjs": "^2.3.3",
     "web-vitals": "^1.1.0"
   },
   "scripts": {
