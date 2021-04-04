@@ -149,6 +149,25 @@ export default function AdminMessaging({ authAdmin }) {
       [event.target.name]: event.target.value,
     });
   };
+
+  const searchCharts = (event) => {
+    let allContacts = [...contacts];
+    let name = event.target.value.toLowerCase();
+    const results = allContacts.filter((contact) => {
+      return contact.userName.toLowerCase().includes(name);
+    });
+    console.log(results);
+
+    // setTimeout(() => {
+    //   //setContacts(results);
+    // }, 0);
+    // if (event.target.value === "") {
+    //   setContacts(allContacts);
+    // } else {
+    //setContacts([...results]);
+    // }
+    // console.log(event.target.value);
+  };
   const ROOT_CSS = css({
     height: 310,
     width: 500,
@@ -198,9 +217,9 @@ export default function AdminMessaging({ authAdmin }) {
                 {authAdmin.user.lastName}
               </strong>
             </div>
-            <div className="text-center">My account</div>
+            <div className="text-center mt-3">My account</div>
           </div>
-          <hr className="mt-0 p-0" />
+          <hr className="mt-3 p-0" />
           <div>
             <strong>Online now </strong>
             <span
@@ -211,7 +230,7 @@ export default function AdminMessaging({ authAdmin }) {
             </span>
           </div>
           <div
-            className="d-flex flex-row"
+            className="d-flex flex-row mt-3"
             id="onlineUsers"
             style={{ overflowX: "auto" }}
           >
@@ -253,66 +272,8 @@ export default function AdminMessaging({ authAdmin }) {
             )}
           </div>
           <hr className="mt-0 p-0" />
-          <div className="d-flex flex-column m-0 p-0">
-            <h5 className="m-0 p-0">
-              <strong className="m-0 p-0">Chats</strong>
-            </h5>
-            <div className="form-group has-search">
-              <FaSearch className="form-control-feedback mt-2 ml-3" />
-              <input
-                type="text"
-                id="searchCharts"
-                className="form-control mx-1"
-                placeholder="Search Charts"
-                style={{ backgroundColor: "#F3F2EF" }}
-              />
-            </div>
-            <div style={{ height: "120px", overflowY: "auto" }}>
-              {contacts.map((contact) => {
-                return (
-                  <div
-                    key={contact.userName}
-                    onClick={() => setActiveContact(contact)}
-                    style={{ cursor: "pointer" }}
-                    className={
-                      activeContact && contact.uid === activeContact.uid
-                        ? "d-flex flex-row bg-dark text-light active-contact"
-                        : "d-flex flex-row"
-                    }
-                  >
-                    <h5 className="rounded-circle border border-teal py-2 px-3 mx-1 my-1 bg-teal">
-                      <strong className={applyContactColors()}>
-                        {contact.userName.charAt(0).toUpperCase()}
-                      </strong>
-                    </h5>
-                    <div className="mt-1">{contact.userName}</div>
-                    {contact.newMessages !== undefined &&
-                      contact.newMessages > 0 && (
-                        <small className="mt-4 mr-2 preview">
-                          {contact.newMessages > 1 ? (
-                            <span
-                              className="badge badge-pill badge-dark "
-                              style={{ marginLeft: "-190%" }}
-                            >
-                              {contact.newMessages} new
-                            </span>
-                          ) : (
-                            <span
-                              className="badge badge-pill badge-dark"
-                              style={{ marginLeft: "-190%" }}
-                            >
-                              {contact.newMessages} new
-                            </span>
-                          )}
-                        </small>
-                      )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
         </Col>
-        <Col sm={4} md={6}>
+        <Col sm={4} md={5}>
           <h5>Chat with</h5>
           <h4>
             <strong>{activeContact.userName}</strong>
@@ -367,13 +328,74 @@ export default function AdminMessaging({ authAdmin }) {
               <FaPaperPlane
                 size={25}
                 color={"#203045"}
-                style={{ marginLeft: "-3%" }}
+                style={{ marginLeft: "-3%", marginTop: "60%" }}
               />
             </span>
           </div>
         </Col>
-        <Col sm={3} md={2}>
-          1 of 1
+        <Col sm={3} md={3} className="ml-5">
+          <div className="d-flex flex-column m-0 p-0">
+            <h5 className="m-0 p-0">
+              <strong className="m-0 p-0">Chats</strong>
+            </h5>
+            <div className="form-group has-search">
+              <FaSearch className="form-control-feedback mt-3 ml-3" />
+              <input
+                type="text"
+                id="searchCharts"
+                className="form-control mx-1 mt-2"
+                placeholder="Search Charts"
+                style={{ backgroundColor: "#F3F2EF" }}
+                onChange={(event) => searchCharts(event)}
+              />
+            </div>
+          </div>
+          <div style={{ height: "50%", overflowY: "auto" }}>
+            {contacts.map((contact) => {
+              return (
+                <div
+                  key={contact.userName}
+                  onClick={() => setActiveContact(contact)}
+                  style={{
+                    cursor: "pointer",
+                    borderBottom: ".5px solid black",
+                  }}
+                  className={
+                    activeContact && contact.uid === activeContact.uid
+                      ? "d-flex flex-row bg-dark text-light active-contact"
+                      : "d-flex flex-row"
+                  }
+                >
+                  <h5 className="rounded-circle border border-teal py-2 px-3 mx-1 my-1 bg-teal">
+                    <strong className={applyContactColors()}>
+                      {contact.userName.charAt(0).toUpperCase()}
+                    </strong>
+                  </h5>
+                  <div className="mt-1">{contact.userName}</div>
+                  {contact.newMessages !== undefined &&
+                    contact.newMessages > 0 && (
+                      <small className="mt-4 mr-2 preview">
+                        {contact.newMessages > 1 ? (
+                          <span
+                            className="badge badge-pill badge-dark "
+                            style={{ marginLeft: "-190%" }}
+                          >
+                            {contact.newMessages} new
+                          </span>
+                        ) : (
+                          <span
+                            className="badge badge-pill badge-dark"
+                            style={{ marginLeft: "-190%" }}
+                          >
+                            {contact.newMessages} new
+                          </span>
+                        )}
+                      </small>
+                    )}
+                </div>
+              );
+            })}
+          </div>
         </Col>
       </Row>
     </Container>

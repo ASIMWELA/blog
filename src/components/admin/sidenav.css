@@ -1,3 +1,7 @@
 .menuIcon:hover{
     cursor: pointer;
 }
+
+#sidenav{
+    font-family: 'Quicksand', sans-serif;
+}

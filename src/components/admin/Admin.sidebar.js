@@ -61,7 +61,7 @@ export default function AdminSidebar() {
   };
 
   return (
-    <div className="d-flex" style={{ position: "relative" }}>
+    <div className="d-flex" style={{ position: "relative" }} id="sidenav">
       {ApiUtil.authenticateAdmin() ? (
         <>
           <ProSidebar
@@ -69,6 +69,7 @@ export default function AdminSidebar() {
               height: "100% !important",
               zIndex: "1009",
             }}
+            className="h-100 "
             collapsed={toggleMenu}
             image="https://azouaoui-med.github.io/react-pro-sidebar/static/media/bg1.74aaeeb9.jpg"
           >
