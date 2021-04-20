@@ -163,7 +163,11 @@ export default function AdminSidebar() {
                 <h5 className="nav-link"> Link</h5>
               </li>
               <li className="nav-item">
-                <h6 className="nav-link" onClick={logout}>
+                <h6
+                  className="nav-link"
+                  onClick={logout}
+                  style={{ cursor: "pointer" }}
+                >
                   Logout
                   <IoMdLogOut />
                 </h6>
@@ -194,7 +198,9 @@ export default function AdminSidebar() {
               {componentSlug === "Messaging" && (
                 <AdminMessaging authAdmin={admin} />
               )}
-              {componentSlug === "Education" && <AdminEducation />}
+              {componentSlug === "Education" && (
+                <AdminEducation authAdmin={admin} />
+              )}
             </div>
           </main>
         </>

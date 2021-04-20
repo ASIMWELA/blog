@@ -130,7 +130,7 @@ export default function AdminProfile({ authAdmin }) {
             <dl className="row">
               <div></div>
               <dt className="col-sm-3">
-                <FaUser className="mr-3 mb-1" />
+                <FaUser className="mr-1 mb-1" />
                 User name
               </dt>
               <dd className="col-sm-9">
@@ -138,7 +138,7 @@ export default function AdminProfile({ authAdmin }) {
               </dd>
 
               <dt className="col-sm-3">
-                <FaUser className="mr-3 mb-1" />
+                <FaUser className="mr-1 mb-1" />
                 First Name
               </dt>
               <dd className="col-sm-9">
@@ -146,7 +146,7 @@ export default function AdminProfile({ authAdmin }) {
               </dd>
 
               <dt className="col-sm-3">
-                <FaUser className="mr-3 mb-1" />
+                <FaUser className="mr-1 mb-1" />
                 Last Name
               </dt>
               <dd className="col-sm-9">
@@ -155,7 +155,7 @@ export default function AdminProfile({ authAdmin }) {
 
               <dt className="col-sm-3 text-truncate">
                 {" "}
-                <FaEnvelope className="mr-3 mb-1" />
+                <FaEnvelope className="mr-1 mb-1" />
                 Email
               </dt>
               <dd className="col-sm-9">
