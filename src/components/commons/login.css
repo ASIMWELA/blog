@@ -124,7 +124,7 @@ a {
     border-radius: 5px 5px 5px 5px;
   }
   
-  input[type=password] {
+  #inputPassword{
     background-color: #f6f6f6;
     border: none;
     color: #0d0d0d;
@@ -151,7 +151,7 @@ a {
     transition-duration: 0.4s;
   }
   
-  input[type=password]:focus {
+ #inputPassword:focus {
     background-color: #fff;
     border-bottom: 2px solid #203045;
     transform: scale(1.1);

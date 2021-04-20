@@ -103,7 +103,7 @@ export default function Login() {
 
             <input
               type="password"
-              id="password"
+              id="inputPassword"
               className="fadeIn third"
               placeholder="password"
               onChange={handleInputChange}

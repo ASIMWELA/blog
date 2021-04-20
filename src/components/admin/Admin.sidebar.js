@@ -43,7 +43,6 @@ export default function AdminSidebar() {
 
     if (adminAuth()) {
       const admn = JSON.parse(localStorage.getItem("data")).loggedInAdmin;
-
       setAdmin(admn);
       setAuthAdmin(admn);
     }
@@ -189,7 +188,9 @@ export default function AdminSidebar() {
               )}
               {componentSlug === "Skills" && <AdminSkills />}
               {componentSlug === "Experience" && <AdminExperience />}
-              {componentSlug === "Profile" && <AdminProfile />}
+              {componentSlug === "Profile" && (
+                <AdminProfile authAdmin={admin} />
+              )}
               {componentSlug === "Messaging" && (
                 <AdminMessaging authAdmin={admin} />
               )}
