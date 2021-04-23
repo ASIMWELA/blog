@@ -21,7 +21,7 @@ import { useRecoilState } from "recoil";
 import { loggedInAdmin } from "../../recoilState";
 import {
   AdminProjects,
-  AdminSkills,
+  AdminEmployment,
   AdminProfile,
   AdminEducation,
   AdminMessaging,
@@ -65,10 +65,9 @@ export default function AdminSidebar() {
         <>
           <ProSidebar
             style={{
-              height: "100% !important",
               zIndex: "1009",
             }}
-            className="h-100 "
+            className="h-100"
             collapsed={toggleMenu}
             image="https://azouaoui-med.github.io/react-pro-sidebar/static/media/bg1.74aaeeb9.jpg"
           >
@@ -116,7 +115,7 @@ export default function AdminSidebar() {
               <Menu
                 iconShape="square"
                 onClick={(event) => changeComponent(event)}
-                id="Skills"
+                id="Employment"
               >
                 <MenuItem icon={<AiOutlineSetting size={20} />}>
                   Skills
@@ -190,7 +189,9 @@ export default function AdminSidebar() {
               {componentSlug === "Projects" && (
                 <AdminProjects authAdmin={admin} />
               )}
-              {componentSlug === "Skills" && <AdminSkills />}
+              {componentSlug === "Employment" && (
+                <AdminEmployment authAdmin={admin} />
+              )}
               {componentSlug === "Experience" && (
                 <AdminExperience authAdmin={admin} />
               )}

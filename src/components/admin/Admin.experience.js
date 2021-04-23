@@ -488,7 +488,11 @@ export default function AdminExperience({ authAdmin }) {
         <Col
           sm={6}
           md={6}
-          style={{ borderRight: "1px solid black", height: "100%" }}
+          style={{
+            borderRight: "1px solid black",
+            height: "100vh",
+            minHeight: "100vh",
+          }}
         >
           <OverlayTrigger
             placement={"right"}

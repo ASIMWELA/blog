@@ -188,33 +188,62 @@ export default function AdminEducation({ authAdmin }) {
     let changedRow = { ...result };
     changedRow[dataField] = newValue;
 
-    const awardsArray = changedRow.awards.split(",");
-    const eduData = { ...changedRow, awards: awardsArray };
+    if (dataField === "awards") {
+      const awardsArray = changedRow.awards.split(",");
+      const eduData = { ...changedRow, awards: awardsArray };
 
-    Axios({
-      method: "put",
-      url: API_BASE_URL + "/education/update/" + changedRow.institution,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authAdmin.access_TOKEN}`,
-      },
-      data: JSON.stringify(eduData),
-    })
-      .then((res) => {
-        if (res.data.code === 200) {
-          refleshEduDetails();
+      Axios({
+        method: "put",
+        url: API_BASE_URL + "/education/update/" + changedRow.institution,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authAdmin.access_TOKEN}`,
+        },
+        data: JSON.stringify(eduData),
+      })
+        .then((res) => {
+          if (res.data.code === 200) {
+            refleshEduDetails();
+            setState({
+              ...state,
+              successMessage: res.data.message,
+            });
+          }
+        })
+        .catch((err) => {
           setState({
             ...state,
-            successMessage: res.data.message,
+            errorMessage:
+              err.message || "Server failed to process your request",
           });
-        }
-      })
-      .catch((err) => {
-        setState({
-          ...state,
-          errorMessage: err.message || "Server failed to process your request",
         });
-      });
+    } else {
+      Axios({
+        method: "put",
+        url: API_BASE_URL + "/education/update/" + changedRow.institution,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authAdmin.access_TOKEN}`,
+        },
+        data: JSON.stringify(changedRow),
+      })
+        .then((res) => {
+          if (res.data.code === 200) {
+            refleshEduDetails();
+            setState({
+              ...state,
+              successMessage: res.data.message,
+            });
+          }
+        })
+        .catch((err) => {
+          setState({
+            ...state,
+            errorMessage:
+              err.message || "Server failed to process your request",
+          });
+        });
+    }
   };
 
   const noData = () => {
