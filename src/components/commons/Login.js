@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
@@ -18,9 +18,7 @@ export default function Login() {
     isSubmitting: false,
     errorMessage: null,
   });
-  useEffect(() => {
-    document.querySelector("#err").style = "display:none";
-  }, []);
+
   const handleInputChange = (event) => {
     setState({
       ...state,
@@ -57,15 +55,13 @@ export default function Login() {
         }
       })
       .catch((error) => {
-        if (error.message.includes(401)) {
-          document.querySelector("#err").style = "display:block";
+        if (error.message.includes("401")) {
           setState({
             ...state,
             isSubmitting: false,
             errorMessage: "Username, password do not match",
           });
         } else {
-          document.querySelector("#err").style = "display:block";
           setState({
             ...state,
             isSubmitting: false,
@@ -82,14 +78,12 @@ export default function Login() {
           <div className="fadeIn first">
             <FaUser id="icon" size={60} />
           </div>
-          <div
-            className="alert alert-danger mt-1 mb-0"
-            id="err"
-            role="alert"
-            style={{ maxWidth: "64%", marginLeft: "17%", display: "none" }}
-          >
-            {state.errorMessage}
-          </div>
+          {state.errorMessage && (
+            <div className="alert alert-danger mt-1 mb-0" id="err" role="alert">
+              {state.errorMessage}
+            </div>
+          )}
+
           <form onSubmit={handleFormSubmit}>
             <input
               type="text"

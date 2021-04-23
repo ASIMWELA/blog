@@ -191,7 +191,9 @@ export default function AdminSidebar() {
                 <AdminProjects authAdmin={admin} />
               )}
               {componentSlug === "Skills" && <AdminSkills />}
-              {componentSlug === "Experience" && <AdminExperience />}
+              {componentSlug === "Experience" && (
+                <AdminExperience authAdmin={admin} />
+              )}
               {componentSlug === "Profile" && (
                 <AdminProfile authAdmin={admin} />
               )}

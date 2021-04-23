@@ -6,7 +6,6 @@ import cellEditFactory from "react-bootstrap-table2-editor";
 import { Modal } from "react-bootstrap";
 import { API_BASE_URL } from "../../constants";
 import ApiUtil from "../../ApiUtil/ApiUtil";
-import {} from "../../components/commons";
 import Axios from "axios";
 import "./admin.project.css";
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
@@ -333,13 +332,16 @@ export default function AdminProjects({ authAdmin }) {
         <Modal.Body>Are You Sure?</Modal.Body>
         <Modal.Footer>
           <button
-            className="btn btn-info mr-5"
+            style={{ float: "left", borderRadius: "30px" }}
+            className="btn btn-dark px-5 py-2"
             onClick={() => setModalShow(false)}
           >
             No
           </button>
+
           <button
-            className=" btn btn-danger ml-3"
+            style={{ float: "right", borderRadius: "30px" }}
+            className="btn btn-warning px-5 py-2"
             onClick={deleteProject}
             disabled={deleteBtnDisable}
           >

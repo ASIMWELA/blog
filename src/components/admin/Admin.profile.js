@@ -379,6 +379,9 @@ export default function AdminProfile({ authAdmin }) {
               </form>
             </Modal.Body>
           </Modal>
+          <div className="text-center">
+            <strong>Address details</strong>
+          </div>
         </Col>
         <Col sm={3} md={3}></Col>
       </Row>
