@@ -1,9 +1,18 @@
-import React, { useState } from "react";
-import { OverlayTrigger, Tooltip, Modal } from "react-bootstrap";
-import { FaUser, FaEnvelope, FaAddressBook } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { OverlayTrigger, Tooltip, Modal, Card } from "react-bootstrap";
+import {
+  FaUser,
+  FaEnvelope,
+  FaAddressBook,
+  FaCity,
+  FaAddressCard,
+  FaTrash,
+} from "react-icons/fa";
 import { BiEdit } from "react-icons/bi";
 import { useForm } from "react-hook-form";
 import { API_BASE_URL } from "../../constants";
+import { BsFillPlusCircleFill, BsPhone } from "react-icons/bs";
+import { FiUser, FiFlag } from "react-icons/fi";
 import Axios from "axios";
 
 export default function AdminProfile({ authAdmin }) {
@@ -20,6 +29,13 @@ export default function AdminProfile({ authAdmin }) {
   });
   const [showModal, setShowModal] = useState(false);
   const { register, handleSubmit, errors } = useForm();
+  const [address, setAddress] = useState();
+
+  useEffect(() => {
+    if ("contactInfo" in authAdmin.user) {
+      setAddress(authAdmin.user.contactInfo);
+    }
+  }, [authAdmin.user]);
 
   const handleInputChange = (event) => {
     setState({
@@ -79,6 +95,8 @@ export default function AdminProfile({ authAdmin }) {
       email: authAdmin.user.email,
     });
   };
+
+  console.log(address);
   const handleCloseModal = () => {
     setShowModal(false);
     setState({
@@ -99,26 +117,21 @@ export default function AdminProfile({ authAdmin }) {
   };
 
   return (
-    <div className="d-flex flex-row">
-      <div>
-        <div className="mt-3">
-          <OverlayTrigger
-            placement={"right"}
-            overlay={
-              <Tooltip id="tooltip-disabled">Click to Edit you details</Tooltip>
-            }
-          >
-            <span
-              className="d-inline-block mt-1 mb-3"
-              style={{ float: "left", cursor: "pointer" }}
-              onClick={setEditAdmin}
-            >
-              <BiEdit size={30} color={"#203045"} />
-            </span>
-          </OverlayTrigger>
-          <dl className="row mt-4">
+    <div className="container-fluid">
+      <div className="row">
+        <div className="col-md-2"></div>
+        <div className="col-md-4">
+          <div style={{ marginLeft: "20%" }}>
+            <div className="ml-4">
+              <FiUser size={45} />
+            </div>
+            <div>
+              <strong style={{ fontWeight: "bold" }}>Admin Details</strong>
+            </div>
+          </div>
+          <dl className="row mt-2">
             <dt className="col-sm-5">
-              <FaUser className="mr-1 mb-1" />
+              <FaUser className="mb-1" />
               User name
             </dt>
             <dd className="col-sm-3">
@@ -126,7 +139,7 @@ export default function AdminProfile({ authAdmin }) {
             </dd>
 
             <dt className="col-sm-5">
-              <FaUser className="mr-1 mb-1" />
+              <FaUser className="mb-1" />
               First Name
             </dt>
             <dd className="col-sm-5">
@@ -134,35 +147,151 @@ export default function AdminProfile({ authAdmin }) {
             </dd>
 
             <dt className="col-sm-5">
-              <FaUser className="mr-1 mb-1" />
+              <FaUser className="mb-1" />
               Last Name
             </dt>
             <dd className="col-sm-5">
               <strong>{authAdmin.user.lastName}</strong>
             </dd>
-
-            <dt className="col-sm-5 text-truncate">
-              {" "}
-              <FaEnvelope className="mr-1 mb-1" />
-              Email
-            </dt>
-            <dd className="col-sm-5">
-              <strong>{authAdmin.user.email}</strong>
-            </dd>
+            <div className="text-center">
+              <dt className="col-sm-12">
+                <FaEnvelope className="mr-1 mb-1" />
+                Email
+              </dt>
+              <dd className="col-sm-12 ml-2">
+                <strong>{authAdmin.user.email}</strong>
+              </dd>
+            </div>
+            <Card className="col-md-8">
+              <Card.Body className="p-0">
+                <OverlayTrigger
+                  placement={"bottom"}
+                  overlay={
+                    <Tooltip id="tooltip-disabled">
+                      Click to Edit you details
+                    </Tooltip>
+                  }
+                >
+                  <span
+                    className="d-inline-block"
+                    style={{ float: "left", cursor: "pointer" }}
+                    onClick={setEditAdmin}
+                  >
+                    <BiEdit size={30} color={"#203045"} />
+                  </span>
+                </OverlayTrigger>
+              </Card.Body>
+            </Card>
           </dl>
+          <div></div>
         </div>
-      </div>
-      <div className="mt-3">
-        <div className="text-center d-flex flex-column">
-          <div>
-            <FaAddressBook size={25} />
+        <div className="col-sm-1"></div>
+        <div className="col-md-3" style={{ marginTop: "7%" }}>
+          <div style={{ marginLeft: "24%" }}>
+            <div className="ml-3">
+              <FaAddressBook size={25} />
+            </div>
+            <div>
+              <strong>Address</strong>
+            </div>
           </div>
-          <div className="mt-1">
-            <strong>Address</strong>
-          </div>
-        </div>
-      </div>
 
+          {!address && (
+            <div>
+              <OverlayTrigger
+                placement={"right"}
+                overlay={
+                  <Tooltip id="tooltip-disabled">
+                    click To Add Address Details
+                  </Tooltip>
+                }
+              >
+                <span
+                  className="d-inline-block mt-1 mb-2"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => setShowModal(true)}
+                >
+                  <BsFillPlusCircleFill size={30} color={"#203045"} />
+                </span>
+              </OverlayTrigger>
+            </div>
+          )}
+          {address && (
+            <dl className="row mt-2">
+              <dt className="col-sm-5">
+                <BsPhone className="mb-1" />
+                Phone
+              </dt>
+              <dd className="col-sm-3">
+                <strong>{address.phoneNumber}</strong>
+              </dd>
+
+              <dt className="col-sm-5">
+                <FaCity className="mb-1" />
+                City
+              </dt>
+              <dd className="col-sm-5">
+                <strong>{address.city}</strong>
+              </dd>
+
+              <dt className="col-sm-5">
+                <FiFlag className="mb-1" />
+                Country
+              </dt>
+              <dd className="col-sm-5">
+                <strong>{address.country}</strong>
+              </dd>
+              <div className="text-center">
+                <dt className="col-sm-12">
+                  {" "}
+                  <FaAddressCard size={25} className="mr-1 mb-1" />
+                  Physical Address
+                </dt>
+                <dd className="col-sm-12">
+                  <strong>{address.physicalAddress}</strong>
+                </dd>
+              </div>
+
+              <Card className="col-sm-10">
+                <Card.Body className="p-0">
+                  <OverlayTrigger
+                    placement={"bottom"}
+                    overlay={
+                      <Tooltip id="tooltip-disabled">
+                        Click to Edit Address Details
+                      </Tooltip>
+                    }
+                  >
+                    <span
+                      className="d-inline-block"
+                      style={{ float: "left", cursor: "pointer" }}
+                    >
+                      <BiEdit className="text-dark" size={30} />
+                    </span>
+                  </OverlayTrigger>
+
+                  <OverlayTrigger
+                    placement={"bottom"}
+                    overlay={
+                      <Tooltip id="tooltip-disabled">
+                        Delete Address Details
+                      </Tooltip>
+                    }
+                  >
+                    <span
+                      className="d-inline-block"
+                      style={{ float: "right", cursor: "pointer" }}
+                    >
+                      <FaTrash className="p-1" color={"red"} size={30} />
+                    </span>
+                  </OverlayTrigger>
+                </Card.Body>
+              </Card>
+            </dl>
+          )}
+        </div>
+        <div className="col-md-2"></div>
+      </div>
       <Modal
         show={showModal}
         backdrop="static"

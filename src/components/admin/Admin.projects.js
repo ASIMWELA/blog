@@ -11,6 +11,7 @@ import "./admin.project.css";
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { FaTrash } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import { BsFillPlusCircleFill } from "react-icons/bs";
 export default function AdminProjects({ authAdmin }) {
   const [projectList, setProjects] = useRecoilState(projects);
@@ -65,7 +66,7 @@ export default function AdminProjects({ authAdmin }) {
       dataField: "description",
       text: "Description",
       headerStyle: (colum, colIndex) => {
-        return { width: "47%" };
+        return { width: "40%" };
       },
       validator: (newValue, row, column, done) => {
         if (newValue === "") {
@@ -89,6 +90,9 @@ export default function AdminProjects({ authAdmin }) {
         }
         return true;
       },
+      headerStyle: (colum, colIndex) => {
+        return { width: "15%" };
+      },
     },
     {
       dataField: "locationLink",
@@ -103,10 +107,35 @@ export default function AdminProjects({ authAdmin }) {
 
         return true;
       },
+      formatter: (cell) => {
+        return (
+          <>
+            <Link
+              to={`//${cell}`}
+              target="_blank"
+              className="text-dark pro-location-link"
+            >
+              {cell}
+            </Link>
+          </>
+        );
+      },
     },
     {
       dataField: "collaborators",
       text: "Collaborators",
+      headerStyle: (colum, colIndex) => {
+        return { width: "18%" };
+      },
+      formatter: (cell) => {
+        return (
+          <>
+            {cell.map((label, index) => (
+              <li key={index}>{label}</li>
+            ))}
+          </>
+        );
+      },
     },
     {
       dataField: "actions",

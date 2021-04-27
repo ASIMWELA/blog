@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { FaTrash } from "react-icons/fa";
 import cellEditFactory from "react-bootstrap-table2-editor";
 import BootstrapTable from "react-bootstrap-table-next";
@@ -34,7 +34,7 @@ export default function AdminEducation({ authAdmin }) {
     }
   }, [authAdmin]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     refleshEduDetails();
   }, []);
   const deleteIconFormatter = (cell, row, rowIndex, formatExtraData) => {
@@ -156,6 +156,15 @@ export default function AdminEducation({ authAdmin }) {
           });
         }
         return true;
+      },
+      formatter: (cell) => {
+        return (
+          <>
+            {cell.map((label, index) => (
+              <li key={index}>{label}</li>
+            ))}
+          </>
+        );
       },
     },
     {

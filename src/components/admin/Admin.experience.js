@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { Col, Row, OverlayTrigger, Tooltip, Modal } from "react-bootstrap";
 import { BsFillPlusCircleFill } from "react-icons/bs";
 import { FaTrash } from "react-icons/fa";
@@ -53,7 +53,7 @@ export default function AdminExperience({ authAdmin }) {
     }
   }, [authAdmin.user]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     refreshExperienceDetails();
     refreshSkills();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -300,6 +300,15 @@ export default function AdminExperience({ authAdmin }) {
       },
       headerStyle: (colum, colIndex) => {
         return { width: "50%" };
+      },
+      formatter: (cell) => {
+        return (
+          <>
+            {cell.map((label, index) => (
+              <li key={index}>{label}</li>
+            ))}
+          </>
+        );
       },
     },
     {
