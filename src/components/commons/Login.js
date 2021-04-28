@@ -55,11 +55,11 @@ export default function Login() {
         }
       })
       .catch((error) => {
-        if (error.message.includes("401")) {
+        if ("message" in error.response.data) {
           setState({
             ...state,
             isSubmitting: false,
-            errorMessage: "Username, password do not match",
+            errorMessage: error.response.data.message,
           });
         } else {
           setState({

@@ -102,3 +102,17 @@
       display: flex;
       flex-direction: row;
   }
+
+
+  #connected{
+      background-color: green;
+      color: white;
+      border: green ;
+  }
+
+  #disconnected{
+    background-color: #203045;
+    color: white;
+    border: #203045;
+
+  }

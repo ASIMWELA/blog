@@ -18,6 +18,7 @@ import { AiOutlineMenu, AiOutlineLeft, AiOutlineSetting } from "react-icons/ai";
 import ApiUtil from "../../ApiUtil/ApiUtil";
 import "./sidenav.css";
 import { useRecoilState } from "recoil";
+import { Modal } from "react-bootstrap";
 import { loggedInAdmin } from "../../recoilState";
 import {
   AdminProjects,
@@ -30,6 +31,7 @@ import {
 
 export default function AdminSidebar() {
   const [toggleMenu, setToggle] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const history = useHistory();
   // eslint-disable-next-line no-unused-vars
   const [authAdmin, setAuthAdmin] = useRecoilState(loggedInAdmin);
@@ -55,8 +57,14 @@ export default function AdminSidebar() {
   };
 
   const logout = () => {
-    setAuthAdmin();
-    history.push("/login");
+    const chennelConnected = JSON.parse(localStorage.getItem("data"))
+      .isAdminChannelConnected;
+    if (!chennelConnected) {
+      setAuthAdmin();
+      history.push("/login");
+    } else {
+      setShowModal(true);
+    }
   };
 
   return (
@@ -204,6 +212,35 @@ export default function AdminSidebar() {
               {componentSlug === "Education" && (
                 <AdminEducation authAdmin={admin} />
               )}
+
+              <Modal
+                size="sm"
+                show={showModal}
+                backdrop="static"
+                onHide={() => setShowModal(false)}
+                animation={true}
+              >
+                <Modal.Header closeButton>
+                  <Modal.Title>Disconnect Channel</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  Disconnect Message Chanel <br /> Before Logout.
+                </Modal.Body>
+                <Modal.Footer>
+                  <div className="text-center">
+                    <button
+                      style={{ borderRadius: "30px" }}
+                      className="btn btn-dark px-5 py-2"
+                      onClick={() => {
+                        setShowModal(false);
+                        setComponentSlug("Messaging");
+                      }}
+                    >
+                      OK
+                    </button>
+                  </div>
+                </Modal.Footer>
+              </Modal>
             </div>
           </main>
         </>

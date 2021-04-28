@@ -7,6 +7,7 @@ import { useRecoilState } from "recoil";
 import { chatActiveContact } from "../../recoilState";
 import { BsFillCircleFill } from "react-icons/bs";
 import { FaSearch, FaPaperPlane } from "react-icons/fa";
+import { isAdminChannelConnected } from "../../recoilState";
 import { API_BASE_MESSAGING_URL } from "../../constants";
 import ScrollToBottom from "react-scroll-to-bottom";
 import "./messaging.css";
@@ -18,6 +19,9 @@ export default function AdminMessaging({ authAdmin }) {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [privateMessages, setPrivateChatMessages] = useState([]);
   const [activeContact, setActiveContact] = useRecoilState(chatActiveContact);
+  const [isChanelConnected, setChannelConnected] = useRecoilState(
+    isAdminChannelConnected
+  );
   let initialState = {
     onlineUsers: null,
     channelConnected: false,
@@ -87,6 +91,8 @@ export default function AdminMessaging({ authAdmin }) {
       {},
       JSON.stringify({ sender: authAdmin.user.userName, type: "JOIN" })
     );
+
+    setChannelConnected(true);
   };
 
   const onError = (error) => {
@@ -117,6 +123,19 @@ export default function AdminMessaging({ authAdmin }) {
     }
     loadContacts();
   };
+  const disconnect = () => {
+    var message = {
+      sender: authAdmin.user.userName,
+      type: "LEAVE",
+    };
+    stompClient.send("/app/toggleAdmin", {}, JSON.stringify(message));
+    stompClient.unsubscribe("privateChat", {});
+    stompClient.disconnect(() => {
+      console.log("Disconnected");
+    }, {});
+
+    setChannelConnected(false);
+  };
   const sendPrivateMessage = () => {
     const message = {
       senderId: authAdmin.user.uid,
@@ -143,6 +162,7 @@ export default function AdminMessaging({ authAdmin }) {
     var strTime = hours + ":" + minutes + " " + ampm;
     return strTime;
   }
+
   const handleTyping = (event) => {
     setState({
       ...state,
@@ -274,10 +294,28 @@ export default function AdminMessaging({ authAdmin }) {
           <hr className="mt-0 p-0" />
         </Col>
         <Col sm={4} md={5}>
-          <h5>Chat with</h5>
-          <h4>
-            <strong>{activeContact.userName}</strong>
-          </h4>
+          <div className="d-flex">
+            <div>
+              <h5>Chat with</h5>
+              <h4>
+                <strong>{activeContact.userName}</strong>
+              </h4>
+            </div>
+            <button
+              style={{
+                marginTop: "1%",
+                marginBottom: "2%",
+                marginLeft: "20%",
+                borderRadius: "30px",
+              }}
+              onClick={isChanelConnected ? disconnect : connectToServer}
+              className="pl-4 pr-4"
+              id={isChanelConnected ? "connected" : "disconnected"}
+            >
+              {isChanelConnected ? "Disconnect" : "Connect"}
+            </button>
+          </div>
+
           <div className="justify-content-center messages">
             <ScrollToBottom debug={false} className={ROOT_CSS}>
               <ul>
@@ -311,6 +349,7 @@ export default function AdminMessaging({ authAdmin }) {
               className="form-control"
               placeholder="Write your message..."
               value={state.privateChatMessage}
+              disabled={isChanelConnected ? false : true}
               onChange={handleTyping}
               onKeyPress={(event) => {
                 if (event.key === "Enter") {
@@ -319,18 +358,20 @@ export default function AdminMessaging({ authAdmin }) {
                 }
               }}
             />
-            <span
+            <button
+              style={{ border: "none", backgroundColor: "inherit" }}
               onClick={() => {
                 sendPrivateMessage();
                 setState({ ...state, privateChatMessage: "" });
               }}
+              disabled={isChanelConnected ? false : true}
             >
               <FaPaperPlane
                 size={25}
                 color={"#203045"}
                 style={{ marginLeft: "-3%", marginTop: "60%" }}
               />
-            </span>
+            </button>
           </div>
         </Col>
         <Col sm={3} md={3} className="ml-5">
