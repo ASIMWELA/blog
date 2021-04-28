@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { OverlayTrigger, Tooltip, Modal, Card } from "react-bootstrap";
 import {
   FaUser,
@@ -14,6 +14,7 @@ import { API_BASE_URL } from "../../constants";
 import { BsFillPlusCircleFill, BsPhone } from "react-icons/bs";
 import { FiUser, FiFlag } from "react-icons/fi";
 import Axios from "axios";
+import ApiUtil from "../../ApiUtil/ApiUtil";
 
 export default function AdminProfile({ authAdmin }) {
   const [state, setState] = useState({
@@ -22,20 +23,32 @@ export default function AdminProfile({ authAdmin }) {
     lastName: "",
     email: "",
     password: "",
+    city: "",
+    physicalAddress: "",
+    phoneNumber: "",
+    country: "",
     successMessage: "",
     isSubmitting: false,
     errorMessage: "",
     validatePassword: "",
+    formTitle: "",
   });
+  const [showAddAddressModal, setShowAddAddressModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const { register, handleSubmit, errors } = useForm();
+  const [selectedPhone, setSelectPhone] = useState();
   const [address, setAddress] = useState();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useEffect(() => {
     if ("contactInfo" in authAdmin.user) {
       setAddress(authAdmin.user.contactInfo);
     }
   }, [authAdmin.user]);
+
+  useLayoutEffect(() => {
+    refreshAddress();
+  }, []);
 
   const handleInputChange = (event) => {
     setState({
@@ -83,7 +96,13 @@ export default function AdminProfile({ authAdmin }) {
         setState({ ...state, errorMessage: err.message });
       });
   };
-
+  const refreshAddress = async () => {
+    await ApiUtil.getAdmin().then((res) => {
+      if ("contactInfo" in res) {
+        setAddress(res.contactInfo);
+      } else setAddress();
+    });
+  };
   const setEditAdmin = () => {
     setShowModal(true);
     setState({
@@ -96,7 +115,16 @@ export default function AdminProfile({ authAdmin }) {
     });
   };
 
-  console.log(address);
+  const handleCloseAddAddressModal = () => {
+    setShowAddAddressModal(false);
+    setState({
+      ...state,
+      city: "",
+      physicalAddress: "",
+      phoneNumber: "",
+      country: "",
+    });
+  };
   const handleCloseModal = () => {
     setShowModal(false);
     setState({
@@ -116,6 +144,143 @@ export default function AdminProfile({ authAdmin }) {
     });
   };
 
+  const saveEditedAddressDetails = () => {
+    setState({
+      ...state,
+      isSubmitting: true,
+      errorMessage: null,
+    });
+    const contactDetails = {
+      city: state.city,
+      country: state.country,
+      physicalAddress: state.physicalAddress,
+      phoneNumber: state.phoneNumber,
+    };
+
+    Axios({
+      method: "put",
+      url: API_BASE_URL + "/contact-info/update/" + selectedPhone,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authAdmin.access_TOKEN}`,
+      },
+      data: JSON.stringify(contactDetails),
+    })
+      .then((res) => {
+        if (res.data.code === 200) {
+          refreshAddress();
+
+          setState({
+            city: "",
+            country: "",
+            phoneNumber: "",
+            physicalAddress: "",
+            submitEdit: false,
+            formTitle: "Add Education Details",
+            successMessage: res.data.message,
+            isSubmitting: false,
+          });
+
+          setTimeout(() => {
+            setShowAddAddressModal(false);
+          }, 3000);
+        }
+      })
+      .catch((err) => {
+        setState({
+          ...state,
+          errorMessage: err.message,
+          isSubmitting: false,
+        });
+      });
+  };
+
+  const hanldeFormSubmitAddress = () => {
+    setState({
+      ...state,
+      isSubmitting: true,
+      errorMessage: null,
+    });
+    const address = {
+      country: state.country,
+      city: state.city,
+      phoneNumber: state.phoneNumber,
+      physicalAddress: state.physicalAddress,
+    };
+
+    Axios({
+      method: "put",
+      url: API_BASE_URL + "/contact-info/" + authAdmin.user.userName,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authAdmin.access_TOKEN}`,
+      },
+      data: JSON.stringify(address),
+    })
+      .then((res) => {
+        if (res.data.code === 200) {
+          refreshAddress();
+          setState({
+            city: "",
+            physicalAddress: "",
+            phoneNumber: "",
+            country: "",
+            submitEdit: false,
+            isSubmitting: false,
+            formTitle: "Add Education Details",
+            successMessage: res.data.message,
+          });
+          setTimeout(() => {
+            setShowAddAddressModal(false);
+          }, 3000);
+        }
+      })
+      .catch((err) => {
+        setState({
+          ...state,
+          errorMessage: err.message,
+        });
+      });
+  };
+
+  const deleteAddressDetails = () => {
+    setState({
+      ...state,
+      isSubmitting: true,
+    });
+    Axios.delete(
+      API_BASE_URL +
+        `/contact-info/${selectedPhone}/${authAdmin.user.userName}`,
+      {
+        headers: {
+          Authorization: `Bearer ${authAdmin.access_TOKEN}`,
+        },
+      }
+    )
+      .then((res) => {
+        if (res.data.code === 200) {
+          refreshAddress();
+          setState({
+            ...state,
+            isSubmitting: true,
+          });
+          setTimeout(() => {
+            setShowDeleteModal(false);
+          }, 1000);
+        }
+      })
+      .catch((err) => {
+        setState({
+          ...state,
+          errorMessage: err.message,
+        });
+      });
+  };
+
+  const prepareDeleteAddress = () => {
+    setShowDeleteModal(true);
+    setSelectPhone(address.phoneNumber);
+  };
   return (
     <div className="container-fluid">
       <div className="row">
@@ -209,7 +374,13 @@ export default function AdminProfile({ authAdmin }) {
                 <span
                   className="d-inline-block mt-1 mb-2"
                   style={{ cursor: "pointer" }}
-                  onClick={() => setShowModal(true)}
+                  onClick={() => {
+                    setShowAddAddressModal(true);
+                    setState({
+                      ...state,
+                      formTitle: "Add Address Details",
+                    });
+                  }}
                 >
                   <BsFillPlusCircleFill size={30} color={"#203045"} />
                 </span>
@@ -244,14 +415,17 @@ export default function AdminProfile({ authAdmin }) {
               <div className="text-center">
                 <dt className="col-sm-12">
                   {" "}
-                  <FaAddressCard size={25} className="mr-1 mb-1" />
+                  <FaAddressCard
+                    size={25}
+                    className="mb-1"
+                    style={{ marginLeft: "-5%" }}
+                  />
                   Physical Address
                 </dt>
                 <dd className="col-sm-12">
                   <strong>{address.physicalAddress}</strong>
                 </dd>
               </div>
-
               <Card className="col-sm-10">
                 <Card.Body className="p-0">
                   <OverlayTrigger
@@ -265,6 +439,19 @@ export default function AdminProfile({ authAdmin }) {
                     <span
                       className="d-inline-block"
                       style={{ float: "left", cursor: "pointer" }}
+                      onClick={() => {
+                        setShowAddAddressModal(true);
+                        setSelectPhone(address.phoneNumber);
+                        setState({
+                          ...state,
+                          formTitle: "Edit Your Address Details",
+                          phoneNumber: address.phoneNumber,
+                          physicalAddress: address.physicalAddress,
+                          country: address.country,
+                          city: address.city,
+                          submitEdit: true,
+                        });
+                      }}
                     >
                       <BiEdit className="text-dark" size={30} />
                     </span>
@@ -281,6 +468,7 @@ export default function AdminProfile({ authAdmin }) {
                     <span
                       className="d-inline-block"
                       style={{ float: "right", cursor: "pointer" }}
+                      onClick={prepareDeleteAddress}
                     >
                       <FaTrash className="p-1" color={"red"} size={30} />
                     </span>
@@ -493,6 +681,179 @@ export default function AdminProfile({ authAdmin }) {
             </div>
           </form>
         </Modal.Body>
+      </Modal>
+
+      <Modal
+        show={showAddAddressModal}
+        backdrop="static"
+        onHide={handleCloseAddAddressModal}
+        animation={true}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>{state.formTitle}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form className="row g-4" id="form">
+            <div className="form-group col-md-6">
+              <label>
+                Phone number<sup style={{ color: "#f44336" }}>*</sup>
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="phoneNumber"
+                style={
+                  errors.phoneNumber && {
+                    borderColor: "red",
+                    boxShadow: "none !important",
+                  }
+                }
+                name="phoneNumber"
+                value={state.phoneNumber}
+                ref={register({ required: true })}
+                onChange={handleInputChange}
+              />
+              {errors.phoneNumber && (
+                <span style={{ color: "#f44336" }}>This field is required</span>
+              )}
+            </div>
+            <div className="form-group col-md-6">
+              <label>
+                City<sup style={{ color: "#f44336" }}>*</sup>
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="city"
+                name="city"
+                style={
+                  errors.city && {
+                    borderColor: "red",
+                    boxShadow: "none !important",
+                  }
+                }
+                value={state.city}
+                ref={register({ required: true, minLength: 2 })}
+                onChange={handleInputChange}
+              />
+              {errors.city && (
+                <span style={{ color: "#f44336" }}>This field is required</span>
+              )}
+              {errors.city && errors.city.type === "minLength" && (
+                <span style={{ color: "#f44336" }}>
+                  City name should have atleast 2 letters
+                </span>
+              )}
+            </div>
+            <div className="form-group col-md-6">
+              <label>
+                Country <sup style={{ color: "#f44336" }}>*</sup>
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="country"
+                name="country"
+                style={
+                  errors.country && {
+                    borderColor: "red",
+                    boxShadow: "none !important",
+                  }
+                }
+                value={state.country}
+                ref={register({ required: true })}
+                onChange={handleInputChange}
+              />
+              {errors.country && (
+                <span style={{ color: "#f44336" }}>This field is required</span>
+              )}
+            </div>
+
+            <div className="form-group col-md-6">
+              <label>
+                Physical Address<sup style={{ color: "#f44336" }}>*</sup>
+              </label>
+              <textarea
+                type="text"
+                className="form-control"
+                rows="2"
+                placeholder="e.g. Computer science department, Chanco, box..."
+                id="physicalAddress"
+                name="physicalAddress"
+                style={
+                  errors.physicalAddress && {
+                    borderColor: "red",
+                    boxShadow: "none !important",
+                  }
+                }
+                value={state.physicalAddress}
+                ref={register({ required: true, maxLength: 150 })}
+                onChange={handleInputChange}
+              />
+              {errors.physicalAddress &&
+                errors.physicalAddress.type === "required" && (
+                  <span style={{ color: "#f44336" }}>
+                    This field is required
+                  </span>
+                )}
+
+              {errors.physicalAddress &&
+                errors.physicalAddress.type === "maxLength" && (
+                  <span style={{ color: "#f44336" }}>
+                    Awards string too long
+                  </span>
+                )}
+            </div>
+            <div className="col-md-12 text-center">
+              <button
+                type="button"
+                id="submitBtn"
+                onClick={
+                  state.submitEdit
+                    ? handleSubmit(saveEditedAddressDetails)
+                    : handleSubmit(hanldeFormSubmitAddress)
+                }
+                className="btn btn-dark text-center px-5 py-2 mt-3"
+                style={{ borderRadius: "30px" }}
+                disabled={state.isSubmitting}
+              >
+                {state.isSubmitting ? "Submitting..." : "Submit"}
+              </button>
+            </div>
+          </form>
+        </Modal.Body>
+      </Modal>
+      <Modal
+        size="sm"
+        show={showDeleteModal}
+        backdrop="static"
+        onHide={() => setShowDeleteModal(false)}
+        animation={true}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Project</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are You Sure?</Modal.Body>
+        <Modal.Footer>
+          <button
+            style={{ float: "left", borderRadius: "30px" }}
+            className="btn btn-dark px-5 py-2"
+            onClick={() => setShowDeleteModal(false)}
+          >
+            No
+          </button>
+
+          <button
+            style={{ float: "right", borderRadius: "30px" }}
+            className="btn btn-warning px-5 py-2"
+            onClick={deleteAddressDetails}
+            disabled={state.isSubmitting}
+          >
+            Yes
+          </button>
+        </Modal.Footer>
       </Modal>
     </div>
   );

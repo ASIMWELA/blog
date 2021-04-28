@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { BiCodeAlt } from "react-icons/bi";
 import { FaUserLock } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import "./navbar.css";
 import { animateRight } from "../../animations/Animate";
 
@@ -32,32 +32,53 @@ export default function NavBar() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ml-auto" ref={(el) => (headerLinks = el)}>
               <li className="nav-item">
-                <Link to="/" className="nav-link">
+                <NavLink
+                  to="/"
+                  className="nav-link"
+                  exact
+                  activeClassName="bg-success"
+                >
                   Home
-                </Link>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <Link to="/projects" className="nav-link">
+                <NavLink
+                  to="/projects"
+                  className="nav-link"
+                  activeClassName="bg-success"
+                >
                   Projects
-                </Link>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <Link to="/profile" className="nav-link">
+                <NavLink
+                  to="/profile"
+                  className="nav-link"
+                  activeClassName="bg-success"
+                >
                   Profile
-                </Link>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <Link to="/contact" className="nav-link">
+                <NavLink
+                  to="/contact"
+                  className="nav-link"
+                  activeClassName="bg-success"
+                >
                   Contact
-                </Link>
+                </NavLink>
               </li>
               <li className="nav-item">
-                <Link to="/login" className="nav-link">
+                <NavLink
+                  to="/login"
+                  className="nav-link"
+                  activeClassName="bg-success"
+                >
                   <FaUserLock
                     size={20}
                     style={{ color: "white", marginBottom: "35%" }}
                   />
-                </Link>
+                </NavLink>
               </li>
             </ul>
           </div>

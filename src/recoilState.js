@@ -24,6 +24,14 @@ export const loggedInAdmin = atom({
   },
 });
 
+export const isAdminChannelConnected = atom({
+  key: "isAdminChannelConnected",
+  default: false,
+  persistence_UNSTABLE: {
+    type: "isAdminChannelConnected",
+  },
+});
+
 export const projects = atom({
   key: "projects",
   default: [],
